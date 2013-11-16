@@ -32,6 +32,8 @@
             android:readPermission="com.wendsday.bippobippo.READ_DATA"
             android:writePermission="com.wendsday.bippobippo.WRITE_DATA"
             />
+        
+        <service android:name=".SensorService" />
     </application>
 
 </manifest>
