@@ -30,3 +30,5 @@ proguard/
 
 #MacOS
 .DS_Store
+
+.settings/
