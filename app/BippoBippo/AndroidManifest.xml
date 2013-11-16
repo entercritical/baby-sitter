@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="17" />
 
     <application
         android:allowBackup="true"
@@ -22,6 +22,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <provider
+            android:authorities="com.wendesday.bippobippo"
+            android:enabled="true"
+            android:exported="true"
+            android:syncable="true"
+            android:name="com.wendesday.bippobippo.provider.BippoBippoProvider"
+            android:readPermission="com.wendsday.bippobippo.READ_DATA"
+            android:writePermission="com.wendsday.bippobippo.WRITE_DATA"
+            />
     </application>
 
 </manifest>
