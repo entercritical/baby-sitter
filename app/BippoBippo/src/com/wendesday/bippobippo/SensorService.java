@@ -158,7 +158,7 @@ public class SensorService extends Service {
 			} else if (AmarinoIntent.ACTION_CONNECTED_DEVICES.equals(action)) {
 				String[] data = intent.getStringArrayExtra(AmarinoIntent.EXTRA_CONNECTED_DEVICE_ADDRESSES);
 				
-				if (data.length == 0) {
+				if (data == null || data.length == 0) {
 					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + "none");
 					return;
 				}
