@@ -18,17 +18,29 @@ void setup()
   pinMode(sensor, INPUT);
 }
 
+char g_buf[100];
+int g_data[10];
+int g_count;
+
 void loop()
 {
+  int i;
+  char tmp[5];
+  
   meetAndroid.receive(); // you need to keep this in your loop() to receive events
   
-  // read input pin and send result to Android
-  char buf[20];
-  //strcpy(buf, "CDS:");
-  sscanf(buf, "CDS:%d", analogRead(sensor));
-  
-  meetAndroid.send(buf);
-  //meetAndroid.send(text);
+  if (g_count >= 10) {
+    g_count = 0;
+    strcpy(g_buf, "CDS ");
+    for (i = 0; i < 10; i++) {
+      itoa(g_data[i], tmp, 10);
+      strcat(g_buf, tmp);
+      strcat(g_buf, " ");
+    }
+    meetAndroid.send(g_buf);
+  }
+      
+  g_data[g_count++] = analogRead(sensor);
   
   // add a little delay otherwise the phone is pretty busy
   delay(1000);
