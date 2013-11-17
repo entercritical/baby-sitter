@@ -57,7 +57,7 @@ public class SensorService extends Service {
 					} else {
 						DebugUtils.ErrorLog("SensorService: mDeviceAddress is null");
 						Intent amarino = getApplicationContext().getPackageManager().getLaunchIntentForPackage("at.abraxas.amarino");
-						DebugUtils.Log("SensorService: " + amarino);
+						DebugUtils.Log("SensorService: startActivity()" + amarino);
 						if (amarino != null)
 							startActivity(amarino);
 					}
