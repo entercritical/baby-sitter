@@ -8,5 +8,9 @@ public class DebugUtils {
 		if (mDebug)
 			Log.d("BippoBippo", msg);
 	}
-
+	
+	public static void ErrorLog(String msg) {
+		if (mDebug)
+			Log.e("BippoBippo", msg);
+	}
 }

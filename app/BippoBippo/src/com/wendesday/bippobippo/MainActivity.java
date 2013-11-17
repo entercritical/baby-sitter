@@ -44,6 +44,9 @@ public class MainActivity extends Activity {
 				startService(intent);
 			}
 		});
+        
+        Intent intent = new Intent(getBaseContext(), SensorService.class);
+        startService(intent);
     }
 
     @Override
