@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.support.v4.content.LocalBroadcastManager;
 import at.abraxas.amarino.Amarino;
 import at.abraxas.amarino.AmarinoIntent;
 
@@ -27,7 +28,10 @@ public class SensorService extends Service {
 	public static final String DEVICE_ADDRESS_KEY = "deviceAddress";
 	public static final String ACTION_START = "com.wendesday.bippobippo.ACTION_START";
 	public static final String ACTION_STOP = "com.wendesday.bippobippo.ACTION_STOP";
-
+	
+	public static final String ACTION_BROADCAST_UPDATE_DATA = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_DATA";
+	public static final String EXTRA_DATA_ARRAY = "com.wendesday.bippobippo.EXTRA_DATA_ARRAY";
+	
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
@@ -168,8 +172,16 @@ public class SensorService extends Service {
 					if (data != null) {
 						DebugUtils.Log("SensorService: " + data);
 						String []output = data.split("\\s");
-						//for (int x=0; x<output.length; x++)
-						//	DebugUtils.Log(output[x]);
+						
+						// test
+						int average = 0;
+						for (int x=1; x<output.length; x++)
+							average += Integer.valueOf(output[x]);
+						average /= output.length - 1;
+						
+						Intent localIntent = new Intent(ACTION_BROADCAST_UPDATE_DATA);
+						localIntent.putExtra(EXTRA_DATA_ARRAY, average);
+						LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
 					}
 				}
 			} else if (AmarinoIntent.ACTION_CONNECTED.equals(action)) {

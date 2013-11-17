@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 	private Button mStartBtn, mStopBtn;
 	private TextView mTextView;
+	private SensorDataReceiver mSensorDataReceiver = new SensorDataReceiver();
 	
 
     @Override
@@ -45,7 +48,11 @@ public class MainActivity extends Activity {
 			}
 		});
         
+
+        
+        // Start Service
         Intent intent = new Intent(getBaseContext(), SensorService.class);
+        intent.setAction(SensorService.ACTION_START);
         startService(intent);
     }
 
@@ -62,20 +69,37 @@ public class MainActivity extends Activity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+        	if (intent == null)
+        		return;
+        	
             String action = intent.getAction();
- 
             
-//            if (SensorService.ACTION_BROADCAST_PREPARED.equals(action)) {
-//                // get onPrepared() & set duration of SeekBar
-//                int duration = intent.getExtras().getInt("duration", 0);
-//                if (mSeekBar != null) {
-//                    mSeekBar.setMax(duration);
-//                }
-//                
-//                // set play timer for update time & seekbar
-//                setPlayTimer(1000);
-//            }
+            if (SensorService.ACTION_BROADCAST_UPDATE_DATA.equals(action)) {
+            	int data = intent.getIntExtra(SensorService.EXTRA_DATA_ARRAY, -1);
+ 
+        		if (mTextView != null) {
+        			mTextView.setText(String.valueOf(data));
+        		}
+            }
         }
     }
+
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_DATA);
+        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(mSensorDataReceiver, filter);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+
+		LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(mSensorDataReceiver);
+	}
 
 }
