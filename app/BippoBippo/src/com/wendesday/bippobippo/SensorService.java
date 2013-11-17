@@ -32,18 +32,24 @@ public class SensorService extends Service {
 		@Override
 		public void handleMessage(Message msg) {
 			Intent intent = (Intent)msg.obj;
+			if (intent == null) {
+				return;
+			}
+			
 			String action = intent.getAction();
 			
 			if (ACTION_START.equals(action)) {
 				//Start
 				DebugUtils.Log("SensorService: ACTION_START");
-				registerReceiver(mArduinoReceiver, new IntentFilter(AmarinoIntent.ACTION_RECEIVED));
-				Amarino.connect(getBaseContext(), DEVICE_ADDRESS);
+				
+				//Amarino.connect(getBaseContext(), DEVICE_ADDRESS);
+				Intent i = new Intent(AmarinoIntent.ACTION_GET_CONNECTED_DEVICES);
+				sendBroadcast(i);
 			} else if (ACTION_STOP.equals(action)) {
 				//Stop
 				DebugUtils.Log("SensorService: ACTION_STOP");
-				Amarino.disconnect(getBaseContext(), DEVICE_ADDRESS);
-				unregisterReceiver(mArduinoReceiver);
+				//Amarino.disconnect(getBaseContext(), DEVICE_ADDRESS);
+				
 				stopSelf();
 			}
 		}
@@ -63,6 +69,16 @@ public class SensorService extends Service {
 		mServiceLooper = thread.getLooper();
 		mServiceHandler = new ServiceHandler(mServiceLooper);
 		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(AmarinoIntent.ACTION_RECEIVED);
+		filter.addAction(AmarinoIntent.ACTION_CONNECTED);
+		filter.addAction(AmarinoIntent.ACTION_DISCONNECTED);
+		filter.addAction(AmarinoIntent.ACTION_CONNECTION_FAILED);
+		filter.addAction(AmarinoIntent.ACTION_PAIRING_REQUESTED);
+		filter.addAction(AmarinoIntent.ACTION_CONNECTED_DEVICES);
+		
+		registerReceiver(mArduinoReceiver, filter);
+				
 		DebugUtils.Log("SensorService: Service Started");
 	}
 
@@ -89,6 +105,8 @@ public class SensorService extends Service {
 	@Override
 	public void onDestroy() {
 		DebugUtils.Log("SensorService: Service Stopped");
+		
+		unregisterReceiver(mArduinoReceiver);
 	}
 
 	/**
@@ -100,32 +118,55 @@ public class SensorService extends Service {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			String data = null;
-
-			// the device address from which the data was sent, we don't need it
-			// here but to demonstrate how you retrieve it
-			final String address = intent
-					.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
-
-			// the type of data which is added to the intent
-			final int dataType = intent.getIntExtra(
-					AmarinoIntent.EXTRA_DATA_TYPE, -1);
-
-			// we only expect String data though, but it is better to check if
-			// really string was sent
-			// later Amarino will support differnt data types, so far data comes
-			// always as string and
-			// you have to parse the data to the type you have sent from
-			// Arduino, like it is shown below
-			if (dataType == AmarinoIntent.STRING_EXTRA) {
-				data = intent.getStringExtra(AmarinoIntent.EXTRA_DATA);
-
-				if (data != null) {
-					DebugUtils.Log("SensorService: " + data);
-					String []output = data.split("\\s");
-					for (int x=0; x<output.length; x++)
-						DebugUtils.Log(output[x]);
+			String action = intent.getAction();
+			if (AmarinoIntent.ACTION_RECEIVED.equals(action)) {
+				String data = null;
+	
+				// the device address from which the data was sent, we don't need it
+				// here but to demonstrate how you retrieve it
+				final String address = intent
+						.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
+	
+				// the type of data which is added to the intent
+				final int dataType = intent.getIntExtra(
+						AmarinoIntent.EXTRA_DATA_TYPE, -1);
+	
+				// we only expect String data though, but it is better to check if
+				// really string was sent
+				// later Amarino will support differnt data types, so far data comes
+				// always as string and
+				// you have to parse the data to the type you have sent from
+				// Arduino, like it is shown below
+				if (dataType == AmarinoIntent.STRING_EXTRA) {
+					data = intent.getStringExtra(AmarinoIntent.EXTRA_DATA);
+	
+					if (data != null) {
+						DebugUtils.Log("SensorService: " + data);
+						String []output = data.split("\\s");
+						//for (int x=0; x<output.length; x++)
+						//	DebugUtils.Log(output[x]);
+					}
 				}
+			} else if (AmarinoIntent.ACTION_CONNECTED.equals(action)) {
+				DebugUtils.Log("SensorService: CONNECTED");
+			} else if (AmarinoIntent.ACTION_DISCONNECTED.equals(action)) {
+				DebugUtils.Log("SensorService: DISCONNECTED");
+			} else if (AmarinoIntent.ACTION_CONNECTION_FAILED.equals(action)) {
+				DebugUtils.Log("SensorService: CONNECTION_FAILED");
+			} else if (AmarinoIntent.ACTION_PAIRING_REQUESTED.equals(action)) {
+				DebugUtils.Log("SensorService: REQUESTED");
+			} else if (AmarinoIntent.ACTION_CONNECTED_DEVICES.equals(action)) {
+				String[] data = intent.getStringArrayExtra(AmarinoIntent.EXTRA_CONNECTED_DEVICE_ADDRESSES);
+				
+				if (data.length == 0) {
+					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + "none");
+					return;
+				}
+				
+				for (int i = 0; i < data.length; i++) {
+					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + data[i]);
+				}
+				//Amarino.connect(getBaseContext(), data[0]);
 			}
 		}
 	}
