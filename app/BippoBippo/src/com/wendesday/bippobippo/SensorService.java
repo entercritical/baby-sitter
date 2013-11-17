@@ -29,8 +29,11 @@ public class SensorService extends Service {
 	public static final String ACTION_START = "com.wendesday.bippobippo.ACTION_START";
 	public static final String ACTION_STOP = "com.wendesday.bippobippo.ACTION_STOP";
 	
-	public static final String ACTION_BROADCAST_UPDATE_DATA = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_DATA";
-	public static final String EXTRA_DATA_ARRAY = "com.wendesday.bippobippo.EXTRA_DATA_ARRAY";
+	public static final String ACTION_BROADCAST_UPDATE_HEAT = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_HEAT";
+	public static final String ACTION_BROADCAST_UPDATE_WET = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_WET";
+	public static final String ACTION_BROADCAST_UPDATE_BPM = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_BPM";
+	public static final String ACTION_BROADCAST_UPDATE_MIC = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_MIC";
+	public static final String EXTRA_DOUBLE_DATA = "com.wendesday.bippobippo.EXTRA_DOUBLE_DATA";
 	
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -150,38 +153,30 @@ public class SensorService extends Service {
 			String action = intent.getAction();
 			if (AmarinoIntent.ACTION_RECEIVED.equals(action)) {
 				String data = null;
-	
-				// the device address from which the data was sent, we don't need it
-				// here but to demonstrate how you retrieve it
-				final String address = intent
-						.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
-	
+				
 				// the type of data which is added to the intent
-				final int dataType = intent.getIntExtra(
-						AmarinoIntent.EXTRA_DATA_TYPE, -1);
+				final int dataType = intent.getIntExtra(AmarinoIntent.EXTRA_DATA_TYPE, -1);
 	
-				// we only expect String data though, but it is better to check if
-				// really string was sent
-				// later Amarino will support differnt data types, so far data comes
-				// always as string and
-				// you have to parse the data to the type you have sent from
-				// Arduino, like it is shown below
 				if (dataType == AmarinoIntent.STRING_EXTRA) {
 					data = intent.getStringExtra(AmarinoIntent.EXTRA_DATA);
 	
 					if (data != null) {
 						DebugUtils.Log("SensorService: " + data);
 						String []output = data.split("\\s");
+						String broadcastAction = null;
 						
-						// test
-						int average = 0;
-						for (int x=1; x<output.length; x++)
-							average += Integer.valueOf(output[x]);
-						average /= output.length - 1;
-						
-						Intent localIntent = new Intent(ACTION_BROADCAST_UPDATE_DATA);
-						localIntent.putExtra(EXTRA_DATA_ARRAY, average);
-						LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
+						if (output != null && output.length > 1) {
+							if ("heat".equals(output[0])) {
+								broadcastAction = ACTION_BROADCAST_UPDATE_HEAT;
+							} else if ("wet".equals(output[0])) {
+								broadcastAction = ACTION_BROADCAST_UPDATE_WET;
+							} else if ("bpm".equals(output[0])) {
+								broadcastAction = ACTION_BROADCAST_UPDATE_BPM;
+							} else if ("mic".equals(output[0])) {
+								broadcastAction = ACTION_BROADCAST_UPDATE_MIC;
+							}
+						}
+						sendBroadcastDoubleData(broadcastAction, getAverage(output));
 					}
 				}
 			} else if (AmarinoIntent.ACTION_CONNECTED.equals(action)) {
@@ -214,5 +209,23 @@ public class SensorService extends Service {
 //				}
 			}
 		}
+	}
+	
+	private double getAverage(String[] data) {
+		double average = 0;
+		if (data == null || data.length == 0)
+			return -1;
+		
+		for (int x = 1; x< data.length; x++)
+			average += Integer.valueOf(data[x]);
+		average /= data.length - 1;
+		
+		return average;
+	}
+	
+	private void sendBroadcastDoubleData(String action, double value) {
+		Intent localIntent = new Intent(action);
+		localIntent.putExtra(EXTRA_DOUBLE_DATA, value);
+		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
 	}
 }

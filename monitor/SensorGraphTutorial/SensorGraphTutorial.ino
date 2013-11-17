@@ -19,29 +19,37 @@ void setup()
 }
 
 char g_buf[100];
-int g_data[10];
+int g_data[4][10];
 int g_count;
+char *g_sensor[] = { "heat", "wet", "bpm", "mic"};
 
 void loop()
 {
-  int i;
+  int i, j;
   char tmp[5];
   
   meetAndroid.receive(); // you need to keep this in your loop() to receive events
   
   if (g_count >= 10) {
     g_count = 0;
-    strcpy(g_buf, "CDS ");
-    for (i = 0; i < 10; i++) {
-      itoa(g_data[i], tmp, 10);
-      strcat(g_buf, tmp);
+    for (j = 0; j < 4; j++) {
+      strcpy(g_buf, g_sensor[j]);
       strcat(g_buf, " ");
+      for (i = 0; i < 10; i++) {
+        itoa(g_data[j][i], tmp, 10);
+        strcat(g_buf, tmp);
+        strcat(g_buf, " ");
+      }
+      meetAndroid.send(g_buf);
     }
-    meetAndroid.send(g_buf);
   }
-      
-  g_data[g_count++] = analogRead(sensor);
+  int val = analogRead(sensor);
   
+  g_data[0][g_count] = map(val, 0, 1023, 30, 40);
+  g_data[1][g_count] = map(val, 0, 1023, 0, 100);
+  g_data[2][g_count] = map(val, 0, 1023, 0, 200);
+  g_data[3][g_count] = val;
+  g_count++;
   // add a little delay otherwise the phone is pretty busy
   delay(1000);
 }

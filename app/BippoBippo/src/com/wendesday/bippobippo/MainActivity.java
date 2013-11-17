@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private Button mStartBtn, mStopBtn;
-	private TextView mTextView;
+	private TextView[] mTextView = new TextView[4];
 	private SensorDataReceiver mSensorDataReceiver = new SensorDataReceiver();
 	
 
@@ -24,7 +24,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        mTextView = (TextView)findViewById(R.id.textView1);
+        mTextView[0] = (TextView)findViewById(R.id.textView1);
+        mTextView[1] = (TextView)findViewById(R.id.textView2);
+        mTextView[2] = (TextView)findViewById(R.id.textView3);
+        mTextView[3] = (TextView)findViewById(R.id.textView4);
+        
         mStartBtn = (Button)findViewById(R.id.button1);
         mStartBtn.setOnClickListener(new OnClickListener() {
 			
@@ -73,13 +77,24 @@ public class MainActivity extends Activity {
         		return;
         	
             String action = intent.getAction();
+            double value;
             
-            if (SensorService.ACTION_BROADCAST_UPDATE_DATA.equals(action)) {
-            	int data = intent.getIntExtra(SensorService.EXTRA_DATA_ARRAY, -1);
+            if (SensorService.ACTION_BROADCAST_UPDATE_HEAT.equals(action)) {
+            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
  
-        		if (mTextView != null) {
-        			mTextView.setText(String.valueOf(data));
-        		}
+        		mTextView[0].setText(String.valueOf(value));
+            } else if (SensorService.ACTION_BROADCAST_UPDATE_WET.equals(action)) {
+            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+ 
+        		mTextView[1].setText(String.valueOf(value));
+            } else if (SensorService.ACTION_BROADCAST_UPDATE_BPM.equals(action)) {
+            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+ 
+        		mTextView[2].setText(String.valueOf(value));
+            } else if (SensorService.ACTION_BROADCAST_UPDATE_MIC.equals(action)) {
+            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+ 
+        		mTextView[3].setText(String.valueOf(value));
             }
         }
     }
@@ -90,7 +105,10 @@ public class MainActivity extends Activity {
 		super.onResume();
 		
         IntentFilter filter = new IntentFilter();
-        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_DATA);
+        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_HEAT);
+        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_WET);
+        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_BPM);
+        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_MIC);
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(mSensorDataReceiver, filter);
 	}
 
