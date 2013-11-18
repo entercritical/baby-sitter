@@ -23,6 +23,10 @@ public class SensorService extends Service {
 	private ArduinoReceiver mArduinoReceiver = new ArduinoReceiver();
 	private String mDeviceAddress;
 	private SharedPreferences mPref;
+	private int mState = STATE_DISCONNECTED;
+	
+	public static final int STATE_CONNECTED = 1;
+	public static final int STATE_DISCONNECTED = 2;
 	
 	public static final String SHARED_PREF_NAME = "SensorServicePref";
 	public static final String DEVICE_ADDRESS_KEY = "deviceAddress";
@@ -34,7 +38,30 @@ public class SensorService extends Service {
 	public static final String ACTION_BROADCAST_UPDATE_BPM = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_BPM";
 	public static final String ACTION_BROADCAST_UPDATE_MIC = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_MIC";
 	public static final String EXTRA_DOUBLE_DATA = "com.wendesday.bippobippo.EXTRA_DOUBLE_DATA";
-	
+
+    // for synchronize service instance
+ //   private static final Object[] sWait = new Object[0];
+//    private static SensorService sInstance;
+//    /**
+//     * return the SensorService instance
+//     */
+//    public static SensorService getInstance(Context context) {
+//        if (sInstance == null) {
+//            context.startService(new Intent(context, SensorService.class));
+//
+//            while (sInstance == null) {
+//                try {
+//                    synchronized (sWait) {
+//                        sWait.wait();
+//                    }
+//                } catch (InterruptedException ignored) {
+//                }
+//            }
+//        }
+//
+//        return sInstance;
+//    }
+    
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
@@ -190,23 +217,28 @@ public class SensorService extends Service {
 					editor.putString(DEVICE_ADDRESS_KEY, mDeviceAddress);
 					editor.commit();
 				}
+				mState = STATE_CONNECTED;
+				
 			} else if (AmarinoIntent.ACTION_DISCONNECTED.equals(action)) {
 				DebugUtils.Log("SensorService: DISCONNECTED");
+				mState = STATE_DISCONNECTED;
+				
 			} else if (AmarinoIntent.ACTION_CONNECTION_FAILED.equals(action)) {
 				DebugUtils.Log("SensorService: CONNECTION_FAILED");
 			} else if (AmarinoIntent.ACTION_PAIRING_REQUESTED.equals(action)) {
 				DebugUtils.Log("SensorService: REQUESTED");
 			} else if (AmarinoIntent.ACTION_CONNECTED_DEVICES.equals(action)) {
-//				String[] data = intent.getStringArrayExtra(AmarinoIntent.EXTRA_CONNECTED_DEVICE_ADDRESSES);
-//				
-//				if (data == null || data.length == 0) {
-//					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + "none");
-//					return;
-//				}
-//				
-//				for (int i = 0; i < data.length; i++) {
-//					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + data[i]);
-//				}
+				String[] data = intent.getStringArrayExtra(AmarinoIntent.EXTRA_CONNECTED_DEVICE_ADDRESSES);
+				
+				if (data == null || data.length == 0) {
+					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + "none");
+					return;
+				}
+				
+				for (int i = 0; i < data.length; i++) {
+					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + data[i]);
+				}
+				mState = STATE_CONNECTED;
 			}
 		}
 	}

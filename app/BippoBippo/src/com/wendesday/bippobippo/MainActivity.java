@@ -17,7 +17,6 @@ public class MainActivity extends Activity {
 	private Button mStartBtn, mStopBtn;
 	private TextView[] mTextView = new TextView[4];
 	private SensorDataReceiver mSensorDataReceiver = new SensorDataReceiver();
-	
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
