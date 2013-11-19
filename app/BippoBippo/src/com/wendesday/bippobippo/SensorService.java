@@ -158,8 +158,9 @@ public class SensorService extends Service {
 	
 // test
 //		sendBroadcastSensorData(
-//				new SensorDataModel.SensorDataModelBuilder()
+//				new SensorDataModel.Builder()
 //				.phone(mPhone)
+//				.timestamp(System.currentTimeMillis())
 //				.heat(36)
 //				.wet(50)
 //				.bpm(80)

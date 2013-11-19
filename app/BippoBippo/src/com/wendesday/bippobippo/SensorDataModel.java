@@ -15,7 +15,7 @@ public class SensorDataModel implements Parcelable {
 		
 	}
 	
-	public SensorDataModel(SensorDataModelBuilder builder) {
+	public SensorDataModel(Builder builder) {
 		mPhone = builder.mPhone;
 		mTimeStamp = builder.mTimeStamp;
 		mHeat = builder.mHeat;
@@ -70,7 +70,7 @@ public class SensorDataModel implements Parcelable {
 		this.mMic = mMic;
 	}
 	
-	public static class SensorDataModelBuilder {
+	public static class Builder {
 		private String mPhone;
 		private long mTimeStamp;
 		private int mHeat;
@@ -78,35 +78,35 @@ public class SensorDataModel implements Parcelable {
 		private int mBpm;
 		private int mMic;
 		
-		public SensorDataModelBuilder() {
+		public Builder() {
 		}
 		
-		public SensorDataModelBuilder phone(String phone) {
+		public Builder phone(String phone) {
 			mPhone = phone;
 			return this;
 		}
 		
-		public SensorDataModelBuilder timestamp(long timestamp) {
+		public Builder timestamp(long timestamp) {
 			mTimeStamp = timestamp;
 			return this;
 		}
 		
-		public SensorDataModelBuilder heat(int heat) {
+		public Builder heat(int heat) {
 			mHeat = heat;
 			return this;
 		}
 		
-		public SensorDataModelBuilder wet(int wet) {
+		public Builder wet(int wet) {
 			mWet = wet;
 			return this;
 		}
 		
-		public SensorDataModelBuilder bpm(int bpm) {
+		public Builder bpm(int bpm) {
 			mBpm = bpm;
 			return this;
 		}
 		
-		public SensorDataModelBuilder mic(int mic) {
+		public Builder mic(int mic) {
 			mMic = mic;
 			return this;
 		}
