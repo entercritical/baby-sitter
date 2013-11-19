@@ -86,6 +86,7 @@ public class MainActivity extends Activity {
         	
             String action = intent.getAction();
             double value;
+            SensorDataModel sensorData;
             
             if (SensorService.ACTION_BROADCAST_UPDATE_HEAT.equals(action)) {
             	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
@@ -103,6 +104,12 @@ public class MainActivity extends Activity {
             	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
  
         		mTextView[3].setText(String.valueOf(value));
+            } else if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
+            	sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
+            	mTextView[0].setText(String.valueOf(sensorData.getHeat()));
+            	mTextView[1].setText(String.valueOf(sensorData.getWet()));
+            	mTextView[2].setText(String.valueOf(sensorData.getBpm()));
+            	mTextView[3].setText(String.valueOf(sensorData.getMic()));            	
             }
         }
     }
@@ -113,6 +120,7 @@ public class MainActivity extends Activity {
 		super.onResume();
 		
         IntentFilter filter = new IntentFilter();
+        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA);        
         filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_HEAT);
         filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_WET);
         filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_BPM);

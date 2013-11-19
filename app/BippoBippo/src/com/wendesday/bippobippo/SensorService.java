@@ -1,5 +1,7 @@
 package com.wendesday.bippobippo;
 
+import java.util.ArrayList;
+
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,12 +35,19 @@ public class SensorService extends Service {
 	public static final String ACTION_START = "com.wendesday.bippobippo.ACTION_START";
 	public static final String ACTION_STOP = "com.wendesday.bippobippo.ACTION_STOP";
 	
+	public static final String ACTION_BROADCAST_UPDATE_SENSORDATA = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_SENSORDATA";
 	public static final String ACTION_BROADCAST_UPDATE_HEAT = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_HEAT";
 	public static final String ACTION_BROADCAST_UPDATE_WET = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_WET";
 	public static final String ACTION_BROADCAST_UPDATE_BPM = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_BPM";
 	public static final String ACTION_BROADCAST_UPDATE_MIC = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_MIC";
+	public static final String EXTRA_SENSOR_DATA = "com.wendesday.bippobippo.EXTRA_SENSOR_DATA";
 	public static final String EXTRA_DOUBLE_DATA = "com.wendesday.bippobippo.EXTRA_DOUBLE_DATA";
 
+	public static final int SENSORDATA_ARRAY_SIZE = 10;
+	
+	private String mPhone;
+	private ArrayList<SensorDataModel> mSensorDataList = new ArrayList<SensorDataModel>();
+	
     // for synchronize service instance
  //   private static final Object[] sWait = new Object[0];
 //    private static SensorService sInstance;
@@ -133,10 +142,29 @@ public class SensorService extends Service {
 		
 		registerReceiver(mArduinoReceiver, filter);
 		
+		// Preference for device address
 		mPref = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 		mDeviceAddress = mPref.getString(DEVICE_ADDRESS_KEY, null);
+		
+		// Phone number
+		mPhone = Utils.getInstance(this).getPhoneNumber();
+		DebugUtils.Log("SensorService: PhoneNumber = " + mPhone);
+		
+		// Sensor Data List
+		for (int i = 0; i < SENSORDATA_ARRAY_SIZE; i++)
+			mSensorDataList.add(new SensorDataModel());
 				
 		DebugUtils.Log("SensorService: Service Started");
+	
+// test
+//		sendBroadcastSensorData(
+//				new SensorDataModel.SensorDataModelBuilder()
+//				.phone(mPhone)
+//				.heat(36)
+//				.wet(50)
+//				.bpm(80)
+//				.mic(200)
+//				.build());
 	}
 
 	@Override
@@ -190,20 +218,11 @@ public class SensorService extends Service {
 					if (data != null) {
 						DebugUtils.Log("SensorService: " + data);
 						String []output = data.split("\\s");
-						String broadcastAction = null;
 						
-						if (output != null && output.length > 1) {
-							if ("heat".equals(output[0])) {
-								broadcastAction = ACTION_BROADCAST_UPDATE_HEAT;
-							} else if ("wet".equals(output[0])) {
-								broadcastAction = ACTION_BROADCAST_UPDATE_WET;
-							} else if ("bpm".equals(output[0])) {
-								broadcastAction = ACTION_BROADCAST_UPDATE_BPM;
-							} else if ("mic".equals(output[0])) {
-								broadcastAction = ACTION_BROADCAST_UPDATE_MIC;
-							}
-						}
-						sendBroadcastDoubleData(broadcastAction, getAverage(output));
+						setSensorDataList(output);
+						
+						if (BippoBippo.SensorData.MIC.equals(output[0]))
+							sendBroadcastSensorData(mSensorDataList.get(SENSORDATA_ARRAY_SIZE - 1));
 					}
 				}
 			} else if (AmarinoIntent.ACTION_CONNECTED.equals(action)) {
@@ -243,6 +262,31 @@ public class SensorService extends Service {
 		}
 	}
 	
+	private void setSensorDataList(String[] data) {
+		if (data == null || data.length == 0)
+			return;
+		
+		if (BippoBippo.SensorData.HEAT.equals(data[0])) {
+			long time = System.currentTimeMillis();
+			for (int i = 1; i < data.length; i++) {
+				mSensorDataList.get(i - 1).setTimeStamp(time);
+				mSensorDataList.get(i - 1).setHeat(Integer.valueOf(data[i]));
+			}
+		} else if (BippoBippo.SensorData.WET.equals(data[0])) {
+			for (int i = 1; i < data.length; i++) {
+				mSensorDataList.get(i - 1).setWet(Integer.valueOf(data[i]));
+			}			
+		} else if (BippoBippo.SensorData.BPM.equals(data[0])) {
+			for (int i = 1; i < data.length; i++) {
+				mSensorDataList.get(i - 1).setBpm(Integer.valueOf(data[i]));
+			}			
+		} else if (BippoBippo.SensorData.MIC.equals(data[0])) {
+			for (int i = 1; i < data.length; i++) {
+				mSensorDataList.get(i - 1).setMic(Integer.valueOf(data[i]));
+			}			
+		}
+	}
+	
 	private double getAverage(String[] data) {
 		double average = 0;
 		if (data == null || data.length == 0)
@@ -258,6 +302,12 @@ public class SensorService extends Service {
 	private void sendBroadcastDoubleData(String action, double value) {
 		Intent localIntent = new Intent(action);
 		localIntent.putExtra(EXTRA_DOUBLE_DATA, value);
+		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
+	}
+	
+	private void sendBroadcastSensorData(SensorDataModel sensorData) {
+		Intent localIntent = new Intent(ACTION_BROADCAST_UPDATE_SENSORDATA);
+		localIntent.putExtra(EXTRA_SENSOR_DATA, sensorData);
 		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
 	}
 }
