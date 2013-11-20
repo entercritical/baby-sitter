@@ -45,6 +45,9 @@ public class SensorService extends Service {
 
 	public static final int SENSORDATA_ARRAY_SIZE = 10;
 	
+	public static final char FLAG_GET_CURRENT_DATA = 'C';
+	
+	
 	private String mPhone;
 	private ArrayList<SensorDataModel> mSensorDataList = new ArrayList<SensorDataModel>();
 	
@@ -90,13 +93,14 @@ public class SensorService extends Service {
 				//Start
 				DebugUtils.Log("SensorService: ACTION_START");
 				
-				//Amarino.connect(getBaseContext(), DEVICE_ADDRESS);
-				//Intent i = new Intent(AmarinoIntent.ACTION_GET_CONNECTED_DEVICES);
-				//sendBroadcast(i);
 				if (mPref != null) {
 					mDeviceAddress = mPref.getString(DEVICE_ADDRESS_KEY, null);
 					if (mDeviceAddress != null) {
 						Amarino.connect(getBaseContext(), mDeviceAddress);
+
+						// check connected devices
+						Intent in = new Intent(AmarinoIntent.ACTION_GET_CONNECTED_DEVICES);
+						sendBroadcast(in);
 					} else {
 						DebugUtils.ErrorLog("SensorService: mDeviceAddress is null");
 						Intent amarino = getApplicationContext().getPackageManager().getLaunchIntentForPackage("at.abraxas.amarino");
@@ -124,7 +128,7 @@ public class SensorService extends Service {
 		// separate thread because the service normally runs in the process's
 		// main thread, which we don't want to block. We also make it
 		// background priority so CPU-intensive work will not disrupt our UI.
-		HandlerThread thread = new HandlerThread("ServiceStartArguments",
+		HandlerThread thread = new HandlerThread("SensorServiceThread",
 				Process.THREAD_PRIORITY_BACKGROUND);
 		thread.start();
 
@@ -222,8 +226,9 @@ public class SensorService extends Service {
 						
 						setSensorDataList(output);
 						
-						if (BippoBippo.SensorData.MIC.equals(output[0]))
-							sendBroadcastSensorData(mSensorDataList.get(SENSORDATA_ARRAY_SIZE - 1));
+						if (BippoBippo.SensorData.MIC.equals(output[0])) {
+							sendBroadcastSensorData((output.length == 2) ? mSensorDataList.get(0) : getAverageSensorData(mSensorDataList));
+						}
 					}
 				}
 			} else if (AmarinoIntent.ACTION_CONNECTED.equals(action)) {
@@ -238,7 +243,6 @@ public class SensorService extends Service {
 					editor.commit();
 				}
 				mState = STATE_CONNECTED;
-				
 			} else if (AmarinoIntent.ACTION_DISCONNECTED.equals(action)) {
 				DebugUtils.Log("SensorService: DISCONNECTED");
 				mState = STATE_DISCONNECTED;
@@ -259,6 +263,9 @@ public class SensorService extends Service {
 					DebugUtils.Log("SensorService: CONNECTED_DEVICES " + data[i]);
 				}
 				mState = STATE_CONNECTED;
+				
+				// get Current Sensor Data
+				Amarino.sendDataToArduino(getBaseContext(), mDeviceAddress, FLAG_GET_CURRENT_DATA, "");
 			}
 		}
 	}
@@ -268,9 +275,7 @@ public class SensorService extends Service {
 			return;
 		
 		if (BippoBippo.SensorData.HEAT.equals(data[0])) {
-			long time = System.currentTimeMillis();
 			for (int i = 1; i < data.length; i++) {
-				mSensorDataList.get(i - 1).setTimeStamp(time);
 				mSensorDataList.get(i - 1).setHeat(Integer.valueOf(data[i]));
 			}
 		} else if (BippoBippo.SensorData.WET.equals(data[0])) {
@@ -288,23 +293,52 @@ public class SensorService extends Service {
 		}
 	}
 	
-	private double getAverage(String[] data) {
-		double average = 0;
-		if (data == null || data.length == 0)
-			return -1;
+//	private void clearSensorDataList() {
+//		for (int i = 0; i < mSensorDataList.size(); i++) {
+//			mSensorDataList.get(i).clear();
+//		}
+//	}
+	
+	private SensorDataModel getAverageSensorData(ArrayList<SensorDataModel> list) {
+		SensorDataModel avg = new SensorDataModel();
+		int heat, wet, bpm, mic;
 		
-		for (int x = 1; x< data.length; x++)
-			average += Integer.valueOf(data[x]);
-		average /= data.length - 1;
+		avg.setPhone(mPhone);
+		avg.setTimeStamp(System.currentTimeMillis());
+		heat = wet = bpm = mic = 0;
 		
-		return average;
+		for (int i = 0; i < list.size(); i++) {
+			SensorDataModel d = list.get(i);
+			heat += d.getHeat();
+			wet += d.getWet();
+			bpm += d.getBpm();
+			mic += d.getMic();
+		}
+		avg.setHeat(heat/list.size());
+		avg.setWet(wet/list.size());
+		avg.setBpm(bpm/list.size());
+		avg.setMic(mic/list.size());
+		
+		return avg;
 	}
 	
-	private void sendBroadcastDoubleData(String action, double value) {
-		Intent localIntent = new Intent(action);
-		localIntent.putExtra(EXTRA_DOUBLE_DATA, value);
-		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
-	}
+//	private double getAverage(String[] data) {
+//		double average = 0;
+//		if (data == null || data.length == 0)
+//			return -1;
+//		
+//		for (int x = 1; x< data.length; x++)
+//			average += Integer.valueOf(data[x]);
+//		average /= data.length - 1;
+//		
+//		return average;
+//	}
+//	
+//	private void sendBroadcastDoubleData(String action, double value) {
+//		Intent localIntent = new Intent(action);
+//		localIntent.putExtra(EXTRA_DOUBLE_DATA, value);
+//		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
+//	}
 	
 	private void sendBroadcastSensorData(SensorDataModel sensorData) {
 		Intent localIntent = new Intent(ACTION_BROADCAST_UPDATE_SENSORDATA);
