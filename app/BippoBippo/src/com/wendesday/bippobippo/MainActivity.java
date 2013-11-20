@@ -66,6 +66,10 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(getBaseContext(), SensorService.class);
         intent.setAction(SensorService.ACTION_START);
         startService(intent);
+        
+        NetworkService networkThread = new NetworkService(true);
+        networkThread.start();      
+        
     }
 
     @Override
@@ -126,6 +130,7 @@ public class MainActivity extends Activity {
         filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_BPM);
         filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_MIC);
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(mSensorDataReceiver, filter);
+         
 	}
 
 	@Override
