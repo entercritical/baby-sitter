@@ -13,7 +13,8 @@ void setup()
   // use the baud rate your bluetooth module is configured to 
   // not all baud rates are working well, i.e. ATMEGA168 works best with 57600
   Serial1.begin(57600); 
- 
+  
+  meetAndroid.registerFunction(sendCurrentData, 'C');
   // we initialize analog pin A0 as an input pin
   pinMode(sensor, INPUT);
 }
@@ -54,4 +55,18 @@ void loop()
   delay(1000);
 }
 
+
+void sendCurrentData(byte flag, byte numOfValues)
+{
+  int j;
+  char tmp[5];
+   for (j = 0; j < 4; j++) {
+      strcpy(g_buf, g_sensor[j]);
+      strcat(g_buf, " ");
+      itoa(g_data[j][0], tmp, 10);
+      strcat(g_buf, tmp);
+      strcat(g_buf, " ");
+      meetAndroid.send(g_buf);
+    }
+}
 

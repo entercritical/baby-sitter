@@ -2,6 +2,7 @@ package com.wendesday.bippobippo;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +11,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
@@ -22,6 +20,7 @@ public class MainActivity extends Activity {
 	private TextView[] mTextView = new TextView[4];
 	private SensorDataReceiver mSensorDataReceiver = new SensorDataReceiver();
 	private Switch mActionBarSwitch;
+	private ProgressDialog mProgressDialog;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,11 @@ public class MainActivity extends Activity {
 				    //Start Sensor Service
 			        Intent intent = new Intent(getBaseContext(), SensorService.class);
 			        intent.setAction(SensorService.ACTION_START);
-			        startService(intent);					
+			        startService(intent);
+			        
+			        // Progress Popup
+			        if (mProgressDialog != null)
+			        	mProgressDialog.show();
 				} else {
 					//Stop Sensor Service
 					Intent intent = new Intent(getBaseContext(), SensorService.class);
@@ -66,10 +69,12 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(getBaseContext(), SensorService.class);
         intent.setAction(SensorService.ACTION_START);
         startService(intent);
-        
+
+        // Progress Popup
+        mProgressDialog = ProgressDialog.show(this, getString(R.string.connecting), getString(R.string.please_wait));
+
         NetworkService networkThread = new NetworkService(true);
         networkThread.start();      
-        
     }
 
     @Override
@@ -109,6 +114,9 @@ public class MainActivity extends Activity {
  
         		mTextView[3].setText(String.valueOf(value));
             } else if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
+            	if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            		mProgressDialog.dismiss();
+            	}
             	sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
             	mTextView[0].setText(String.valueOf(sensorData.getHeat()));
             	mTextView[1].setText(String.valueOf(sensorData.getWet()));
