@@ -42,6 +42,13 @@
                 <action android:name="com.wendesday.bippobippo.ACTION_STOP" />
             </intent-filter>
         </service>
+        
+         <service android:name=".SensorService">
+			<intent-filter>
+                <action android:name="com.wendesday.bippobippo.ACTION_START" />
+                <action android:name="com.wendesday.bippobippo.ACTION_STOP" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

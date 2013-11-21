@@ -1,5 +1,7 @@
 package com.wendesday.bippobippo;
 
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -161,4 +163,25 @@ public class SensorDataModel implements Parcelable {
 		mBpm = 0;
 		mMic = 0;
 	}
+	
+	 /**
+	   * Convert the RawContact object into a JSON string.  From the
+	   * JSONString interface.
+	   * @return a JSON string representation of the object
+	   */
+	public JSONObject toJSONObject() {
+	    JSONObject json = new JSONObject();
+
+	    try {	      
+	        json.put(Constants.HEAT, mHeat);
+	        json.put(Constants.WET, mWet);
+	        json.put(Constants.BPM, mBpm);
+	        json.put(Constants.MIC, mMic);
+	        json.put(Constants.TIMESTAMP, mTimeStamp);
+	    } catch (final Exception ex) {
+	       DebugUtils.ErrorLog("Error converting RawContact to JSONObject" + ex.toString());
+	    }
+	    
+	    return json;
+	}	
 }
