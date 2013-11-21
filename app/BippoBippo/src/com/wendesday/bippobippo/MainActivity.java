@@ -73,8 +73,8 @@ public class MainActivity extends Activity {
         // Progress Popup
         mProgressDialog = ProgressDialog.show(this, getString(R.string.connecting), getString(R.string.please_wait));
 
-        NetworkService networkThread = new NetworkService(true);
-        networkThread.start();      
+        //NetworkService networkThread = new NetworkService(true);
+        //networkThread.start();      
     }
 
     @Override

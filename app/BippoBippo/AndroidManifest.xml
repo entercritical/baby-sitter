@@ -43,10 +43,10 @@
             </intent-filter>
         </service>
         
-         <service android:name=".SensorService">
+         <service android:name=".network.NetworkCommunicator">
 			<intent-filter>
-                <action android:name="com.wendesday.bippobippo.ACTION_START" />
-                <action android:name="com.wendesday.bippobippo.ACTION_STOP" />
+                <action android:name="com.wendesday.bippobippo.user.SEND" />
+                <action android:name="com.wnedesday.bippobippo.health.SEND" />
             </intent-filter>
         </service>
     </application>

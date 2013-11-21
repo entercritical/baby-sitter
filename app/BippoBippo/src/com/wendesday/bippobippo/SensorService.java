@@ -2,6 +2,8 @@ package com.wendesday.bippobippo;
 
 import java.util.ArrayList;
 
+import com.wendesday.bippobippo.network.NetworkCommunicator;
+
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -227,7 +229,9 @@ public class SensorService extends Service {
 						setSensorDataList(output);
 						
 						if (BippoBippo.SensorData.MIC.equals(output[0])) {
-							sendBroadcastSensorData((output.length == 2) ? mSensorDataList.get(0) : getAverageSensorData(mSensorDataList));
+							SensorDataModel sensorData = (output.length == 2) ? mSensorDataList.get(0) : getAverageSensorData(mSensorDataList);
+							sendUISensorData(sensorData);
+							sendServerSensorData(sensorData);
 						}
 					}
 				}
@@ -340,9 +344,17 @@ public class SensorService extends Service {
 //		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
 //	}
 	
-	private void sendBroadcastSensorData(SensorDataModel sensorData) {
+	private void sendUISensorData(SensorDataModel sensorData) {
+		//Status View
 		Intent localIntent = new Intent(ACTION_BROADCAST_UPDATE_SENSORDATA);
 		localIntent.putExtra(EXTRA_SENSOR_DATA, sensorData);
 		LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(localIntent);
+	}
+	
+	private void sendServerSensorData(SensorDataModel sensorData) {
+		//Web Server
+		Intent serverIntent = new Intent(Constants.ACTION_SEND_HEALTH_DATA);
+		serverIntent.putExtra(EXTRA_SENSOR_DATA, sensorData);
+		startService(serverIntent);
 	}
 }
