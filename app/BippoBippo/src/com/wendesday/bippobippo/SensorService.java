@@ -280,7 +280,7 @@ public class SensorService extends Service {
 		
 		if (BippoBippo.SensorData.HEAT.equals(data[0])) {
 			for (int i = 1; i < data.length; i++) {
-				mSensorDataList.get(i - 1).setHeat(Integer.valueOf(data[i]));
+				mSensorDataList.get(i - 1).setHeat(Float.valueOf(data[i]) / 10);	// HEAT value is x10 (245 -> 24.5) 
 			}
 		} else if (BippoBippo.SensorData.WET.equals(data[0])) {
 			for (int i = 1; i < data.length; i++) {
