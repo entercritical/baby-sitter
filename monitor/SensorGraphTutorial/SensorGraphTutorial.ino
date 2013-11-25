@@ -46,7 +46,7 @@ void loop()
   }
   int val = analogRead(sensor);
   
-  g_data[0][g_count] = map(val, 0, 1023, 30, 40);
+  g_data[0][g_count] = map(val, 0, 1023, 300, 400);
   g_data[1][g_count] = map(val, 0, 1023, 0, 100);
   g_data[2][g_count] = map(val, 0, 1023, 0, 200);
   g_data[3][g_count] = val;

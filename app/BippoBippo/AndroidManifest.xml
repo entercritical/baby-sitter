@@ -49,6 +49,7 @@
                 <action android:name="com.wnedesday.bippobippo.health.SEND" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>

@@ -28,6 +28,7 @@ public class SensorService extends Service {
 	private String mDeviceAddress;
 	private SharedPreferences mPref;
 	private int mState = STATE_DISCONNECTED;
+	private ContentResolverHelper mContentResolverHelper;
 	
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_DISCONNECTED = 2;
@@ -159,7 +160,11 @@ public class SensorService extends Service {
 		// Sensor Data List
 		for (int i = 0; i < SENSORDATA_ARRAY_SIZE; i++)
 			mSensorDataList.add(new SensorDataModel());
-				
+		
+		// Content Resolver
+		mContentResolverHelper = new ContentResolverHelper(getBaseContext());
+		mContentResolverHelper.open();
+		
 		DebugUtils.Log("SensorService: Service Started");
 	
 // test
@@ -201,6 +206,9 @@ public class SensorService extends Service {
 		unregisterReceiver(mArduinoReceiver);
 		
 		mPref = null;
+		
+		mContentResolverHelper.close();
+		mContentResolverHelper = null;
 	}
 
 	/**
@@ -232,6 +240,7 @@ public class SensorService extends Service {
 							SensorDataModel sensorData = (output.length == 2) ? mSensorDataList.get(0) : getAverageSensorData(mSensorDataList);
 							sendUISensorData(sensorData);
 							sendServerSensorData(sensorData);
+							mContentResolverHelper.insertSensorData(sensorData);
 						}
 					}
 				}

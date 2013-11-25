@@ -17,4 +17,9 @@ public class Constants {
 	public static final String MIC = "mic";
 	public static final String TIMESTAMP = "timestamp";
 	
+	//PERSON JSON KEY
+	public static final String PHONE = "phone";
+	public static final String DISPLAYNAME = "name";
+	public static final String BIRTHDAY = "birth";
+	
 }
