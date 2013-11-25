@@ -8,7 +8,7 @@ import android.os.Parcelable;
 public class SensorDataModel implements Parcelable {
 	private String mPhone;
 	private long mTimeStamp;
-	private int mHeat;
+	private float mHeat;
 	private int mWet;
 	private int mBpm;
 	private int mMic;
@@ -29,7 +29,7 @@ public class SensorDataModel implements Parcelable {
 	public SensorDataModel(Parcel in) {
 		mPhone = in.readString();
 		mTimeStamp = in.readLong();
-		mHeat = in.readInt();
+		mHeat = in.readFloat();
 		mWet = in.readInt();
 		mBpm = in.readInt();
 		mMic = in.readInt();
@@ -51,11 +51,11 @@ public class SensorDataModel implements Parcelable {
 		this.mTimeStamp = mTimeStamp;
 	}
 
-	public int getHeat() {
+	public float getHeat() {
 		return mHeat;
 	}
 
-	public void setHeat(int mHeat) {
+	public void setHeat(float mHeat) {
 		this.mHeat = mHeat;
 	}
 
@@ -86,7 +86,7 @@ public class SensorDataModel implements Parcelable {
 	public static class Builder {
 		private String mPhone;
 		private long mTimeStamp;
-		private int mHeat;
+		private float mHeat;
 		private int mWet;
 		private int mBpm;
 		private int mMic;
@@ -104,7 +104,7 @@ public class SensorDataModel implements Parcelable {
 			return this;
 		}
 
-		public Builder heat(int heat) {
+		public Builder heat(float heat) {
 			mHeat = heat;
 			return this;
 		}
@@ -139,7 +139,7 @@ public class SensorDataModel implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(mPhone);
 		dest.writeLong(mTimeStamp);
-		dest.writeInt(mHeat);
+		dest.writeFloat(mHeat);
 		dest.writeInt(mWet);
 		dest.writeInt(mBpm);
 		dest.writeInt(mMic);
