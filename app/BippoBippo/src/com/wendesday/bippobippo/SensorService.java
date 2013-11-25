@@ -241,6 +241,7 @@ public class SensorService extends Service {
 							sendUISensorData(sensorData);
 							sendServerSensorData(sensorData);
 							mContentResolverHelper.insertSensorData(sensorData);
+							mContentResolverHelper.printLastSensorData();
 						}
 					}
 				}

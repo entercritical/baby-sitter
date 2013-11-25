@@ -3,6 +3,7 @@ package com.wendesday.bippobippo;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 public class ContentResolverHelper {
@@ -36,7 +37,7 @@ public class ContentResolverHelper {
 		values.put(BippoBippo.SensorData.TIMESTAMP, sensor.getTimeStamp());
 		
 		Uri uri = mContentResolver.insert(BippoBippo.SensorData.CONTENT_URI, values);
-		DebugUtils.Log("ContentProviderHelper.insertSensorData() " + uri.toString());
+		//DebugUtils.Log("ContentProviderHelper.insertSensorData() " + uri.toString());
 		return uri;
 	}
 	
@@ -49,8 +50,22 @@ public class ContentResolverHelper {
 		return 0;
 	}
 	
-	public void printSensorData() {
-		//mContentResolver.query(BippoBippo.SensorData.CONTENT_URI, projection, selection, selectionArgs, sortOrder)
+	public void printLastSensorData() {
+		
+		Cursor cursor = mContentResolver.query(BippoBippo.SensorData.CONTENT_URI, null, null, null, null);
+		
+		if (cursor != null) {
+			cursor.moveToLast();
+			DebugUtils.Log("ContentProviderHelper.printLastSensorData() " 
+			+ cursor.getColumnName(0) + ":" +cursor.getString(0) 
+					+ " " + cursor.getColumnName(1) + ":" + cursor.getString(1)
+					+ " " + cursor.getColumnName(2) + ":" + cursor.getString(2)
+					+ " " + cursor.getColumnName(3) + ":" + cursor.getString(3)
+					+ " " + cursor.getColumnName(4) + ":" + cursor.getString(4)
+					+ " " + cursor.getColumnName(5) + ":" + cursor.getString(5));
+
+			cursor.close();
+		}
 	}
 	public Uri insertPerson(PersonModel person) {
 		if (mContentResolver == null || person == null) {
