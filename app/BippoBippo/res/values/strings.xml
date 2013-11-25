@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="connecting">Connecting</string>
     <string name="please_wait">Please wait...</string>
+    <string name="chart_summary">chart summary</string>
 
 </resources>

@@ -25,6 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.wendesday.bippobippo.chart.BabyChartActivity">
+            <intent-filter>
+                <action android:name="com.wendesday.bippobippo.VIEW_CHART"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         
         <provider
             android:authorities="com.wendesday.bippobippo"

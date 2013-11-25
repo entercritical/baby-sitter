@@ -10,6 +10,8 @@ public class Constants {
 	public static final String ACTION_SEND_USER_DATA = "com.wendesday.bippobippo.user.SEND";
 	public static final String ACTION_SEND_HEALTH_DATA= "com.wnedesday.bippobippo.health.SEND";
 	
+	// INTENT action for chart activity
+	public static final String ACTION_VIEW_CHART = "com.wendesday.bippobippo.VIEW_CHART";	
 	// JSON KEY
 	public static final String HEAT = "heat";
 	public static final String WET = "wet";

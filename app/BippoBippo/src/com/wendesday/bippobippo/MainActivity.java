@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
@@ -80,8 +81,10 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
+        //getMenuInflater().inflate(R.menu.main, menu);
+        
+    	// chart menu
+    	menu.add(0, 1, Menu.NONE, "Show chart");
         return true;
     }
     
@@ -147,6 +150,16 @@ public class MainActivity extends Activity {
 		super.onPause();
 
 		LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(mSensorDataReceiver);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(item.getItemId() == 1){
+			// disaplay a chart view
+			Intent intent = new Intent(Constants.ACTION_VIEW_CHART);
+			startActivity(intent);
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 }
