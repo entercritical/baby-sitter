@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ public class MainActivity extends Activity {
 	private SensorDataReceiver mSensorDataReceiver = new SensorDataReceiver();
 	private Switch mActionBarSwitch;
 	private ProgressDialog mProgressDialog;
+	private LinearLayout mButtonsLayout;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,9 @@ public class MainActivity extends Activity {
         mTextView[1] = (TextView)findViewById(R.id.wetText);
         mTextView[2] = (TextView)findViewById(R.id.bpmText);
         mTextView[3] = (TextView)findViewById(R.id.micText);
+        
+        mButtonsLayout = (LinearLayout)findViewById(R.id.buttonsLayout);
+        mButtonsLayout.setVisibility(View.INVISIBLE);
         
         ActionBar actionbar = getActionBar();
 		mActionBarSwitch = new Switch(this);
