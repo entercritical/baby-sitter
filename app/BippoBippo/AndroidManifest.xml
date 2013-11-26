@@ -57,9 +57,15 @@
             </intent-filter>
         </service>
 
-        <activity android:name="AlarmActivity" >
+        <activity android:name=".AlarmActivity" android:launchMode="singleTop">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="com.wendesday.bippobippo.ACTION_ALARM"/>
+                <action android:name="com.wendesday.bippobippo.ACTION_HEAT_ALARM"/>
+                <action android:name="com.wendesday.bippobippo.ACTION_WET_ALARM"/>
+                <action android:name="com.wendesday.bippobippo.ACTION_BPM_ALARM"/>
+                <action android:name="com.wendesday.bippobippo.ACTION_MIC_ALARM"/>
+                
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
     </application>

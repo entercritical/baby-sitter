@@ -38,6 +38,12 @@ public class SensorService extends Service {
 	public static final String ACTION_START = "com.wendesday.bippobippo.ACTION_START";
 	public static final String ACTION_STOP = "com.wendesday.bippobippo.ACTION_STOP";
 	
+	public static final String ACTION_ALARM = "com.wendesday.bippobippo.ACTION_ALARM";
+	public static final String ACTION_HEAT_ALARM = "com.wendesday.bippobippo.ACTION_HEAT_ALARM";
+	public static final String ACTION_WET_ALARM = "com.wendesday.bippobippo.ACTION_WET_ALARM";
+	public static final String ACTION_BPM_ALARM = "com.wendesday.bippobippo.ACTION_BPM_ALARM";
+	public static final String ACTION_MIC_ALARM = "com.wendesday.bippobippo.ACTION_MIC_ALARM";
+	
 	public static final String ACTION_BROADCAST_UPDATE_SENSORDATA = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_SENSORDATA";
 	public static final String ACTION_BROADCAST_UPDATE_HEAT = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_HEAT";
 	public static final String ACTION_BROADCAST_UPDATE_WET = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_WET";
@@ -243,9 +249,10 @@ public class SensorService extends Service {
 							mContentResolverHelper.insertSensorData(sensorData);
 							mContentResolverHelper.printLastSensorData();
 							
-							//test
-//							if (sensorData.getHeat() < 35) {
-//								Intent in = new Intent(getBaseContext(), AlarmActivity.class);
+							checkBabyStatus(sensorData);
+//							//test
+//							if (sensorData.getMic() > 100) {
+//								Intent in = new Intent(Constants.ACTION_ALARM);
 //								in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //								startActivity(in);
 //							}
@@ -373,5 +380,34 @@ public class SensorService extends Service {
 		Intent serverIntent = new Intent(Constants.ACTION_SEND_HEALTH_DATA);
 		serverIntent.putExtra(EXTRA_SENSOR_DATA, sensorData);
 		startService(serverIntent);
+	}
+	
+	private void checkBabyStatus(SensorDataModel sensorData) {
+		Intent intent;
+		if (sensorData == null) {
+			return;
+		}
+		
+		if (sensorData.getHeat() > 40) {
+			intent = new Intent(ACTION_HEAT_ALARM);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
+			startActivity(intent);			
+		} else if (sensorData.getWet() > 90) {
+			intent = new Intent(ACTION_WET_ALARM);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
+			startActivity(intent);
+		} else if (sensorData.getBpm() > 205) {
+			intent = new Intent(ACTION_BPM_ALARM);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
+			startActivity(intent);			
+		} else if (sensorData.getMic() > 100) {
+			intent = new Intent(ACTION_MIC_ALARM);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
+			startActivity(intent);
+		}
 	}
 }
