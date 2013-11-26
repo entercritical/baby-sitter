@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,61 +6,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <ImageView
-        android:id="@+id/babyStateImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/baby_sleeping_icon" />
+	<include layout="@layout/babystate_layout" />
+    
+    <include layout="@layout/sensordata_layout" />
+    
+    <include layout="@layout/buttons_layout" />
 
-    <TextView
-        android:id="@+id/heatText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/babyStateImage"
-        android:layout_marginLeft="30dp"
-        android:drawableLeft="@drawable/thermometer"
-        android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:textSize="20dp" />
-
-    <TextView
-        android:id="@+id/wetText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/heatText"
-        android:layout_below="@+id/heatText"
-        android:layout_marginTop="10dp"
-        android:drawableLeft="@drawable/diaper"
-        android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:textSize="20dp" />
-
-    <TextView
-        android:id="@+id/bpmText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/wetText"
-        android:layout_below="@+id/wetText"
-        android:layout_marginTop="10dp"
-        android:drawableLeft="@drawable/heart_beat"
-        android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:textSize="20dp" />
-
-    <TextView
-        android:id="@+id/micText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/bpmText"
-        android:layout_below="@+id/bpmText"
-        android:layout_marginTop="10dp"
-        android:drawableLeft="@drawable/mic"
-        android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:textSize="20dp" />
-
-</RelativeLayout>
+</LinearLayout>

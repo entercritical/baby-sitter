@@ -7,10 +7,11 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -35,29 +36,32 @@
         </activity>
         
         <provider
+            android:name="com.wendesday.bippobippo.provider.BippoBippoProvider"
             android:authorities="com.wendesday.bippobippo"
             android:enabled="true"
             android:exported="true"
-            android:syncable="true"
-            android:name="com.wendesday.bippobippo.provider.BippoBippoProvider"
             android:readPermission="com.wendsday.bippobippo.READ_DATA"
-            android:writePermission="com.wendsday.bippobippo.WRITE_DATA"
-            />
-        
-        <service android:name=".SensorService">
-			<intent-filter>
+            android:syncable="true"
+            android:writePermission="com.wendsday.bippobippo.WRITE_DATA" />
+
+        <service android:name=".SensorService" >
+            <intent-filter>
                 <action android:name="com.wendesday.bippobippo.ACTION_START" />
                 <action android:name="com.wendesday.bippobippo.ACTION_STOP" />
             </intent-filter>
         </service>
-        
-         <service android:name=".network.NetworkCommunicator">
-			<intent-filter>
+        <service android:name=".network.NetworkCommunicator" >
+            <intent-filter>
                 <action android:name="com.wendesday.bippobippo.user.SEND" />
                 <action android:name="com.wnedesday.bippobippo.health.SEND" />
             </intent-filter>
         </service>
 
+        <activity android:name="AlarmActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

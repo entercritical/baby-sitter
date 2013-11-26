@@ -242,6 +242,13 @@ public class SensorService extends Service {
 							sendServerSensorData(sensorData);
 							mContentResolverHelper.insertSensorData(sensorData);
 							mContentResolverHelper.printLastSensorData();
+							
+							//test
+//							if (sensorData.getHeat() < 35) {
+//								Intent in = new Intent(getBaseContext(), AlarmActivity.class);
+//								in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//								startActivity(in);
+//							}
 						}
 					}
 				}
