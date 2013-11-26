@@ -67,13 +67,11 @@ public class ShowBabyStatusChart extends AbstractChart
     long time;
     int i = 0;    
     try{
-    	while(cursor.moveToNext()){
+    	while(i < MAX_COUNT && cursor.moveToNext()){
     		time = cursor.getLong(TIMESTAMP_INDEX);
     		dateValues[i] = new Date(time);
     		heatValue = cursor.getString(HEAT_INDEX);
     		heat[i] = Double.valueOf(heatValue);
-    		if(i>MAX_COUNT)
-    			break;
     		i++;    		
         }
     }finally{
@@ -86,7 +84,7 @@ public class ShowBabyStatusChart extends AbstractChart
     PointStyle[] styles = new PointStyle[] { PointStyle.CIRCLE};
     XYMultipleSeriesRenderer renderer = buildRenderer(colors, styles);
     
-    setChartSettings(renderer, "Temprature", "Time", "Degrees", dates.get(0)[0].getTime(),
+    setChartSettings(renderer, "Temprature", "Time", "Celcious Degrees", dates.get(0)[0].getTime(),
     		dates.get(0)[dateValues.length - 1].getTime(), 32, 43, Color.DKGRAY, Color.BLUE);
 
     renderer.setXLabels(7);
