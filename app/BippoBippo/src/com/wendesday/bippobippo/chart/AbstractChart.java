@@ -14,14 +14,14 @@ public abstract class AbstractChart {
 			PointStyle[] styles) {
 		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
 		renderer.setAxisTitleTextSize(20);
-		renderer.setChartTitleTextSize(25);
+		renderer.setChartTitleTextSize(30);
 		renderer.setLabelsTextSize(20);
 		renderer.setLegendTextSize(20);
 		renderer.setPointSize(6f);
 
 		renderer.setShowGrid(true);
 		
-		renderer.setMargins(new int[] { 20, 30, 15, 20 });
+		renderer.setMargins(new int[] { 40, 50, 20, 0 });
 		int length = colors.length;
 		for (int i = 0; i < length; i++) {
 			XYSeriesRenderer r = new XYSeriesRenderer();
