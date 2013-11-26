@@ -244,11 +244,11 @@ public class SensorService extends Service {
 							mContentResolverHelper.printLastSensorData();
 							
 							//test
-							if (sensorData.getHeat() < 35) {
-								Intent in = new Intent(getBaseContext(), AlarmActivity.class);
-								in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-								startActivity(in);
-							}
+//							if (sensorData.getHeat() < 35) {
+//								Intent in = new Intent(getBaseContext(), AlarmActivity.class);
+//								in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//								startActivity(in);
+//							}
 						}
 					}
 				}
