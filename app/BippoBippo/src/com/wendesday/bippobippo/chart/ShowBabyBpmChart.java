@@ -65,12 +65,10 @@ public class ShowBabyBpmChart extends AbstractChart {
 	    String bpmValue = "-1";
 	    int i = 0;    
 	    try{
-	    	while(cursor.moveToNext()){
+	    	while(i < MAX_COUNT && cursor.moveToNext()){
 	    		dateValues[i] = new Date(cursor.getLong(TIMESTAMP_INDEX));
 	    		bpmValue = cursor.getString(BPM_INDEX);
 	    		bpm[i] = Double.valueOf(bpmValue);
-	    		if(i > MAX_COUNT)
-	    			break;
 	    		i++;    		
 	        }
 	    }finally{
