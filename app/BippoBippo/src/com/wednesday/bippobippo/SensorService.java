@@ -1,8 +1,8 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 
 import java.util.ArrayList;
 
-import com.wendesday.bippobippo.network.NetworkCommunicator;
+import com.wednesday.bippobippo.network.NetworkCommunicator;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -35,22 +35,22 @@ public class SensorService extends Service {
 	
 	public static final String SHARED_PREF_NAME = "SensorServicePref";
 	public static final String DEVICE_ADDRESS_KEY = "deviceAddress";
-	public static final String ACTION_START = "com.wendesday.bippobippo.ACTION_START";
-	public static final String ACTION_STOP = "com.wendesday.bippobippo.ACTION_STOP";
+	public static final String ACTION_START = "com.wednesday.bippobippo.ACTION_START";
+	public static final String ACTION_STOP = "com.wednesday.bippobippo.ACTION_STOP";
 	
-	public static final String ACTION_ALARM = "com.wendesday.bippobippo.ACTION_ALARM";
-	public static final String ACTION_HEAT_ALARM = "com.wendesday.bippobippo.ACTION_HEAT_ALARM";
-	public static final String ACTION_WET_ALARM = "com.wendesday.bippobippo.ACTION_WET_ALARM";
-	public static final String ACTION_BPM_ALARM = "com.wendesday.bippobippo.ACTION_BPM_ALARM";
-	public static final String ACTION_MIC_ALARM = "com.wendesday.bippobippo.ACTION_MIC_ALARM";
+	public static final String ACTION_ALARM = "com.wednesday.bippobippo.ACTION_ALARM";
+	public static final String ACTION_HEAT_ALARM = "com.wednesday.bippobippo.ACTION_HEAT_ALARM";
+	public static final String ACTION_WET_ALARM = "com.wednesday.bippobippo.ACTION_WET_ALARM";
+	public static final String ACTION_BPM_ALARM = "com.wednesday.bippobippo.ACTION_BPM_ALARM";
+	public static final String ACTION_MIC_ALARM = "com.wednesday.bippobippo.ACTION_MIC_ALARM";
 	
-	public static final String ACTION_BROADCAST_UPDATE_SENSORDATA = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_SENSORDATA";
-	public static final String ACTION_BROADCAST_UPDATE_HEAT = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_HEAT";
-	public static final String ACTION_BROADCAST_UPDATE_WET = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_WET";
-	public static final String ACTION_BROADCAST_UPDATE_BPM = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_BPM";
-	public static final String ACTION_BROADCAST_UPDATE_MIC = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_MIC";
-	public static final String EXTRA_SENSOR_DATA = "com.wendesday.bippobippo.EXTRA_SENSOR_DATA";
-	public static final String EXTRA_DOUBLE_DATA = "com.wendesday.bippobippo.EXTRA_DOUBLE_DATA";
+	public static final String ACTION_BROADCAST_UPDATE_SENSORDATA = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_SENSORDATA";
+	public static final String ACTION_BROADCAST_UPDATE_HEAT = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_HEAT";
+	public static final String ACTION_BROADCAST_UPDATE_WET = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_WET";
+	public static final String ACTION_BROADCAST_UPDATE_BPM = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_BPM";
+	public static final String ACTION_BROADCAST_UPDATE_MIC = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_MIC";
+	public static final String EXTRA_SENSOR_DATA = "com.wednesday.bippobippo.EXTRA_SENSOR_DATA";
+	public static final String EXTRA_DOUBLE_DATA = "com.wednesday.bippobippo.EXTRA_DOUBLE_DATA";
 
 	public static final int SENSORDATA_ARRAY_SIZE = 10;
 	

@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo.chart;
+package com.wednesday.bippobippo.chart;
 
 import java.util.Date;
 import java.util.List;

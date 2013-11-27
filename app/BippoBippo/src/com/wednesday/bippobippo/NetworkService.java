@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 
 import java.io.BufferedReader;
 import java.io.IOException;

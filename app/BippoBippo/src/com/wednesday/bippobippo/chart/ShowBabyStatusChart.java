@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo.chart;
+package com.wednesday.bippobippo.chart;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,8 +8,8 @@ import org.achartengine.ChartFactory;
 import org.achartengine.chart.PointStyle;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
-import com.wendesday.bippobippo.BippoBippo;
-import com.wendesday.bippobippo.DebugUtils;
+import com.wednesday.bippobippo.BippoBippo;
+import com.wednesday.bippobippo.DebugUtils;
 
 import android.content.Context;
 import android.content.Intent;

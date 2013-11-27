@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo.provider;
+package com.wednesday.bippobippo.provider;
 
 import java.util.HashMap;
 
@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.wendesday.bippobippo.BippoBippo;
+import com.wednesday.bippobippo.BippoBippo;
 
 
 public class BippoBippoProvider extends ContentProvider {

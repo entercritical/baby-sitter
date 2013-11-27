@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 
 
 import android.app.Activity;

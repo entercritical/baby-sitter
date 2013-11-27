@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 
 import org.json.JSONObject;
 

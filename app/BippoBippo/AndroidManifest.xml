@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wendesday.bippobippo"
+    package="com.wednesday.bippobippo"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.wendesday.bippobippo.MainActivity"
+            android:name="com.wednesday.bippobippo.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,16 +28,16 @@
         </activity>
 
         <activity
-            android:name="com.wendesday.bippobippo.chart.BabyChartActivity">
+            android:name="com.wednesday.bippobippo.chart.BabyChartActivity">
             <intent-filter>
-                <action android:name="com.wendesday.bippobippo.VIEW_CHART"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_CHART"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         
         <provider
-            android:name="com.wendesday.bippobippo.provider.BippoBippoProvider"
-            android:authorities="com.wendesday.bippobippo"
+            android:name="com.wednesday.bippobippo.provider.BippoBippoProvider"
+            android:authorities="com.wednesday.bippobippo"
             android:enabled="true"
             android:exported="true"
             android:readPermission="com.wendsday.bippobippo.READ_DATA"
@@ -46,24 +46,24 @@
 
         <service android:name=".SensorService" >
             <intent-filter>
-                <action android:name="com.wendesday.bippobippo.ACTION_START" />
-                <action android:name="com.wendesday.bippobippo.ACTION_STOP" />
+                <action android:name="com.wednesday.bippobippo.ACTION_START" />
+                <action android:name="com.wednesday.bippobippo.ACTION_STOP" />
             </intent-filter>
         </service>
         <service android:name=".network.NetworkCommunicator" >
             <intent-filter>
-                <action android:name="com.wendesday.bippobippo.user.SEND" />
+                <action android:name="com.wednesday.bippobippo.user.SEND" />
                 <action android:name="com.wnedesday.bippobippo.health.SEND" />
             </intent-filter>
         </service>
 
         <activity android:name=".AlarmActivity" android:launchMode="singleTop">
             <intent-filter>
-                <action android:name="com.wendesday.bippobippo.ACTION_ALARM"/>
-                <action android:name="com.wendesday.bippobippo.ACTION_HEAT_ALARM"/>
-                <action android:name="com.wendesday.bippobippo.ACTION_WET_ALARM"/>
-                <action android:name="com.wendesday.bippobippo.ACTION_BPM_ALARM"/>
-                <action android:name="com.wendesday.bippobippo.ACTION_MIC_ALARM"/>
+                <action android:name="com.wednesday.bippobippo.ACTION_ALARM"/>
+                <action android:name="com.wednesday.bippobippo.ACTION_HEAT_ALARM"/>
+                <action android:name="com.wednesday.bippobippo.ACTION_WET_ALARM"/>
+                <action android:name="com.wednesday.bippobippo.ACTION_BPM_ALARM"/>
+                <action android:name="com.wednesday.bippobippo.ACTION_MIC_ALARM"/>
                 
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>

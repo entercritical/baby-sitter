@@ -1,11 +1,11 @@
-package com.wendesday.bippobippo.chart;
+package com.wednesday.bippobippo.chart;
 
 import org.achartengine.GraphicalView;
 
-import com.wendesday.bippobippo.BippoBippo;
-import com.wendesday.bippobippo.BippoBippo.SensorData;
-import com.wendesday.bippobippo.DebugUtils;
-import com.wendesday.bippobippo.R;
+import com.wednesday.bippobippo.BippoBippo;
+import com.wednesday.bippobippo.BippoBippo.SensorData;
+import com.wednesday.bippobippo.DebugUtils;
+import com.wednesday.bippobippo.R;
 
 
 import android.app.Activity;

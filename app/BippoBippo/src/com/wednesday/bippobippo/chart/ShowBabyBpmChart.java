@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo.chart;
+package com.wednesday.bippobippo.chart;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,8 +14,8 @@ import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.view.View;
 
-import com.wendesday.bippobippo.BippoBippo;
-import com.wendesday.bippobippo.DebugUtils;
+import com.wednesday.bippobippo.BippoBippo;
+import com.wednesday.bippobippo.DebugUtils;
 
 public class ShowBabyBpmChart extends AbstractChart {
 	

@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
  * URIs. A well-written client depends only on the constants in the contract.
  */
 public final class BippoBippo {
-    public static final String AUTHORITY = "com.wendesday.bippobippo";
+    public static final String AUTHORITY = "com.wednesday.bippobippo";
     /**
      * The scheme part for this provider's URI
      */
