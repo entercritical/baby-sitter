@@ -8,7 +8,7 @@ public class Constants {
 	
 	// INTENT action for network service
 	public static final String ACTION_SEND_USER_DATA = "com.wednesday.bippobippo.user.SEND";
-	public static final String ACTION_SEND_HEALTH_DATA= "com.wnedesday.bippobippo.health.SEND";
+	public static final String ACTION_SEND_HEALTH_DATA= "com.wednesday.bippobippo.health.SEND";
 	
 	// INTENT action for chart activity
 	public static final String ACTION_VIEW_CHART = "com.wednesday.bippobippo.VIEW_CHART";

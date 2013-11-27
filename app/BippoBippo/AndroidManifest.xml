@@ -40,9 +40,9 @@
             android:authorities="com.wednesday.bippobippo"
             android:enabled="true"
             android:exported="true"
-            android:readPermission="com.wendsday.bippobippo.READ_DATA"
+            android:readPermission="com.wednesday.bippobippo.READ_DATA"
             android:syncable="true"
-            android:writePermission="com.wendsday.bippobippo.WRITE_DATA" />
+            android:writePermission="com.wednesday.bippobippo.WRITE_DATA" />
 
         <service android:name=".SensorService" >
             <intent-filter>
@@ -53,7 +53,7 @@
         <service android:name=".network.NetworkCommunicator" >
             <intent-filter>
                 <action android:name="com.wednesday.bippobippo.user.SEND" />
-                <action android:name="com.wnedesday.bippobippo.health.SEND" />
+                <action android:name="com.wednesday.bippobippo.health.SEND" />
             </intent-filter>
         </service>
 
