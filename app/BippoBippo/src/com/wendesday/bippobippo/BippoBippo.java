@@ -96,11 +96,13 @@ public final class BippoBippo {
          * Path parts for the buddy URIs
          */
         private static final String PATH_SENSOR_DATA = "/sensordata";
+        private static final String PATH_SUMMARY = "/summary";
 
         /**
          * The content:// style URL for this table
          */
         public static final Uri CONTENT_URI =  Uri.parse(SCHEME + AUTHORITY + PATH_SENSOR_DATA);
+        public static final Uri SUMMARY_URI =  Uri.parse(SCHEME + AUTHORITY + PATH_SENSOR_DATA + PATH_SUMMARY);
 
    
         /*
@@ -136,6 +138,12 @@ public final class BippoBippo {
         public static final String MIC = "mic";
 
         public static final String TIMESTAMP = "timestamp";
+        
+        public static final String HIGHEST = "highest";
+        
+        public static final String AVERAGE = "average";
+        
+        public static final String LOWEST = "lowest";
         
 
        

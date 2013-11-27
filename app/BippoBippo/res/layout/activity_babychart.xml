@@ -8,20 +8,59 @@
     <LinearLayout 
         android:id="@+id/chart_temprature"
         android:layout_width="fill_parent"
-        android:layout_height="260dip"
+        android:layout_height="300dip"
         android:background="#FFFFF0"      
         >        
-    </LinearLayout>    
+    </LinearLayout>  
     
-    <LinearLayout 
-        android:id="@+id/chart_bpm"
-        android:layout_width="fill_parent"
-        android:layout_height="260dip"
-        android:background="#FFFFF0"  
-        android:layout_below="@id/chart_temprature"    
-        >        
-    </LinearLayout> 
+    <TextView
+        android:id="@+id/chartSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chart_temprature"
+        android:layout_marginLeft="30dp"
+        android:drawableLeft="@drawable/thermometer"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:textSize="25sp"
+        android:textIsSelectable="false" 
+        android:text="@string/chart_summary"/>
+    
+    <TextView
+        android:id="@+id/highestTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chartSummary"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:gravity="center_vertical"
+        android:textSize="20sp" 
+        android:textIsSelectable="false"
+        android:text="@string/highest_temprature"/>
+    
+     <TextView
+        android:id="@+id/averageTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/highestTemp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:gravity="center_vertical"
+        android:textSize="20sp" 
+        android:textIsSelectable="false"
+        android:text="@string/average_temprature"/>
 
+    <TextView
+        android:id="@+id/lowestTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/averageTemp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:gravity="center_vertical"
+        android:textSize="20sp" 
+        android:textIsSelectable="false"
+        android:text="@string/lowest_temprature"/>
     
 
 </RelativeLayout>

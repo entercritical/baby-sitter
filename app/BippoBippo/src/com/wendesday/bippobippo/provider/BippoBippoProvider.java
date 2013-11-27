@@ -28,6 +28,8 @@ public class BippoBippoProvider extends ContentProvider {
     
     private static HashMap<String, String> sSensorDataProjectionMap;
     
+    private static HashMap<String, String> sSensorDataSummaryProjectionMap;
+    
     
     /*
      * Constants used by the Uri matcher to choose an action based on the pattern
@@ -38,6 +40,7 @@ public class BippoBippoProvider extends ContentProvider {
     private static final int PERSON = 1;
 
     private static final int SENSOR_DATA = 10;
+    private static final int SENSOR_DATA_SUMMARY = 11;
     
     /**
      * A UriMatcher instance
@@ -60,6 +63,7 @@ public class BippoBippoProvider extends ContentProvider {
         
         sUriMatcher.addURI(BippoBippo.AUTHORITY, "person", PERSON);        
         sUriMatcher.addURI(BippoBippo.AUTHORITY, "sensordata", SENSOR_DATA);
+        sUriMatcher.addURI(BippoBippo.AUTHORITY, "sensordata/summary", SENSOR_DATA_SUMMARY);
 
         /*
          * Creates and initializes a projection map that returns all columns
@@ -81,6 +85,12 @@ public class BippoBippoProvider extends ContentProvider {
         sSensorDataProjectionMap.put(BippoBippo.SensorData.WET, BippoBippo.SensorData.WET);
         sSensorDataProjectionMap.put(BippoBippo.SensorData.MIC, BippoBippo.SensorData.MIC);
         sSensorDataProjectionMap.put(BippoBippo.SensorData.TIMESTAMP, BippoBippo.SensorData.TIMESTAMP);
+        
+        sSensorDataSummaryProjectionMap = new HashMap<String, String>();
+        sSensorDataSummaryProjectionMap.put(BippoBippo.SensorData._ID, BippoBippo.SensorData._ID);
+        sSensorDataSummaryProjectionMap.put(BippoBippo.SensorData.HIGHEST, "MAX(heat)");
+        sSensorDataSummaryProjectionMap.put(BippoBippo.SensorData.AVERAGE, "AVG(heat)");
+        sSensorDataSummaryProjectionMap.put(BippoBippo.SensorData.LOWEST, "MIN(heat)");
     }
 
 	@Override
@@ -199,6 +209,16 @@ public class BippoBippoProvider extends ContentProvider {
 			if (TextUtils.isEmpty(sortOrder)) {
 				orderBy = BippoBippo.SensorData.DEFAULT_SORT_ORDER;
 			} 
+			break;
+		}
+		
+		case SENSOR_DATA_SUMMARY:{
+			//StringBuilder sb = new StringBuilder();
+			//sb.append(" ( SELECT _id, MAX(heat) AS highest, AVG(heat) AS average, MIN(heat) AS lowest" +
+			//           " FROM " + BippoBippo.SensorData.TABLE_NAME + ") as " );
+			//qb.setTables(sb.toString());
+			qb.setTables(BippoBippo.SensorData.TABLE_NAME);
+			qb.setProjectionMap(sSensorDataSummaryProjectionMap);		
 			break;
 		}
 
