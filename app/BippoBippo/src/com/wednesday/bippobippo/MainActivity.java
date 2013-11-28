@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -78,7 +80,13 @@ public class MainActivity extends Activity {
         startService(intent);
 
         // Progress Popup
-        mProgressDialog = ProgressDialog.show(this, getString(R.string.connecting), getString(R.string.please_wait));
+        mProgressDialog = ProgressDialog.show(this, getString(R.string.connecting), getString(R.string.please_wait), false, true, new OnCancelListener() {
+			
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				mActionBarSwitch.setChecked(false);
+			}
+		});
 
         //NetworkService networkThread = new NetworkService(true);
         //networkThread.start();      
