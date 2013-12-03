@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -29,6 +30,7 @@ public class SensorService extends Service {
 	private SharedPreferences mPref;
 	private int mState = STATE_DISCONNECTED;
 	private ContentResolverHelper mContentResolverHelper;
+	private Resources mResources;
 	
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_DISCONNECTED = 2;
@@ -170,6 +172,8 @@ public class SensorService extends Service {
 		// Content Resolver
 		mContentResolverHelper = new ContentResolverHelper(getBaseContext());
 		mContentResolverHelper.open();
+		
+		mResources = getBaseContext().getResources();
 		
 		DebugUtils.Log("SensorService: Service Started");
 	
@@ -383,31 +387,25 @@ public class SensorService extends Service {
 	}
 	
 	private void checkBabyStatus(SensorDataModel sensorData) {
-		Intent intent;
 		if (sensorData == null) {
 			return;
 		}
 		
-		if (sensorData.getHeat() > 40) {
-			intent = new Intent(ACTION_HEAT_ALARM);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
-			startActivity(intent);			
+		if (sensorData.getHeat() > mResources.getInteger(R.integer.heat_alarm1_value)) {
+			startAlarmActivity(ACTION_HEAT_ALARM, sensorData);
 		} else if (sensorData.getWet() > 90) {
-			intent = new Intent(ACTION_WET_ALARM);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
-			startActivity(intent);
-		} else if (sensorData.getBpm() > 205) {
-			intent = new Intent(ACTION_BPM_ALARM);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
-			startActivity(intent);			
-		} else if (sensorData.getMic() > 100) {
-			intent = new Intent(ACTION_MIC_ALARM);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
-			startActivity(intent);
+			startAlarmActivity(ACTION_WET_ALARM, sensorData);
+		} else if (sensorData.getBpm() > mResources.getInteger(R.integer.bpm_alarm_high_value)) {
+			startAlarmActivity(ACTION_BPM_ALARM, sensorData);
+		} else if (sensorData.getMic() > mResources.getInteger(R.integer.mic_alarm_value)) {
+			startAlarmActivity(ACTION_MIC_ALARM, sensorData);
 		}
+	}
+	
+	private void startAlarmActivity(String action, SensorDataModel sensorData) {
+		Intent intent = new Intent(action);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
+		startActivity(intent);		
 	}
 }
