@@ -13,5 +13,9 @@
     <string name="highest_temprature">Highest</string>
     <string name="average_temprature">Average</string>
     <string name="lowest_temprature">Lowest</string>
+    <string name="heat_alarm">Heat Alarm</string>
+    <string name="wet_alarm">Wet Alarm</string>
+    <string name="bpm_alarm">Bpm Alarm</string>
+    <string name="mic_alarm">Mic Alarm</string>
 
 </resources>
