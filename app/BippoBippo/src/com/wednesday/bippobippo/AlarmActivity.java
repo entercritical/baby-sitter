@@ -141,6 +141,7 @@ public class AlarmActivity extends Activity{
         
         mBabyStateImage.setImageResource(R.drawable.baby_crying_icon);
         getActionBar().setTitle(mTitleRes[stateIndex]);
+        mTextView[stateIndex].setTextColor(0xFFFF0000);
         mTextView[stateIndex].startAnimation(mAnimBlink);
         
         mTextView[HEAT_INDEX].setText(String.valueOf(sensor.getHeat()));
@@ -190,10 +191,10 @@ public class AlarmActivity extends Activity{
             if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
 
             	sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
-            	mTextView[0].setText(String.valueOf(sensorData.getHeat()));
-            	mTextView[1].setText(String.valueOf(sensorData.getWet()));
-            	mTextView[2].setText(String.valueOf(sensorData.getBpm()));
-            	mTextView[3].setText(String.valueOf(sensorData.getMic()));            	
+            	mTextView[HEAT_INDEX].setText(String.valueOf(sensorData.getHeat()));
+            	mTextView[WET_INDEX].setText(String.valueOf(sensorData.getWet()));
+            	mTextView[BPM_INDEX].setText(String.valueOf(sensorData.getBpm()));
+            	mTextView[MIC_INDEX].setText(String.valueOf(sensorData.getMic()));            	
             }
         }
     }
