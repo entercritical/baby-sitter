@@ -6,6 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.WindowManager;
@@ -15,6 +18,10 @@ public class AlarmActivity extends Activity{
 	private TextView[] mTextView = new TextView[4];
 	private SensorDataReceiver mSensorDataReceiver = new SensorDataReceiver();
 
+	
+	private SoundPool mSoundPool;
+	private int mSoundSiren;
+	 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,6 +60,17 @@ public class AlarmActivity extends Activity{
 //		IntentFilter filter = new IntentFilter();
 //        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA);
 //        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(mSensorDataReceiver, filter);
+	
+		mSoundPool = new SoundPool(5, AudioManager.STREAM_ALARM, 0);
+		mSoundSiren = mSoundPool.load(getBaseContext(), R.raw.siren, 1);
+        
+		mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+			
+			@Override
+			public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+				//TEMP mSoundPool.play(mSoundSiren, 0.5f, 0.5f, 0, -1, 1f);	
+			}
+		});
 	}
 
 	@Override
@@ -69,6 +87,10 @@ public class AlarmActivity extends Activity{
 	protected void onDestroy() {
 		super.onDestroy();
 //		LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(mSensorDataReceiver);
+		
+		//mSoundPool.pause(mSoundSiren);
+		mSoundPool.stop(mSoundSiren);
+		mSoundPool.release();
 	}
 	
 	
