@@ -9,6 +9,7 @@ var user = require('./routes/user');
 var healthinfo = require('./routes/healthinfo');
 var http = require('http');
 var path = require('path');
+var guide = require('./routes/guide');
 
 var app = express();
 
@@ -50,6 +51,8 @@ app.post('/healthinfo/:id', healthinfo.add);
 //query user health infomation
 app.get('/healthinfo/:id?/:operation?', healthinfo.list);
 
+//query guide
+app.get('/guide/:id?/:operation?', guide.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
