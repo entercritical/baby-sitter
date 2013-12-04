@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;

@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 import android.util.Log;
 
 public class DebugUtils {

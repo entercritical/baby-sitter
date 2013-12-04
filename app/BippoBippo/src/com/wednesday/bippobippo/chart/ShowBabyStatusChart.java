@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo.chart;
+package com.wednesday.bippobippo.chart;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,8 +8,8 @@ import org.achartengine.ChartFactory;
 import org.achartengine.chart.PointStyle;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
-import com.wendesday.bippobippo.BippoBippo;
-import com.wendesday.bippobippo.DebugUtils;
+import com.wednesday.bippobippo.BippoBippo;
+import com.wednesday.bippobippo.DebugUtils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,8 +25,10 @@ public class ShowBabyStatusChart extends AbstractChart
   private static final long DAY = HOUR * 24;
   
   private static final int HOURS = 24;
+  
+  private static final int MAX_COUNT = 100;
 
-  public String[] DATA_PROJECTION = new String[] {BippoBippo.SensorData.HEAT, 
+  public String[] DATA_PROJECTION = new String[] {BippoBippo.SensorData.HEAT,
 		                                          BippoBippo.SensorData.TIMESTAMP};
   private final int HEAT_INDEX = 0;
   private final int TIMESTAMP_INDEX = 1;
@@ -51,46 +53,45 @@ public class ShowBabyStatusChart extends AbstractChart
     
     int count = cursor.getCount();
     if(cursor !=null && count <= 0){
-    	DebugUtils.ErrorLog(" There are no values in db");
+    	DebugUtils.ErrorLog(" Database data is empty");
     	return null;
     }
     
-    if(count > 10){
-    	count = 10; // max arrary count is 10
+    if(count > MAX_COUNT){
+    	count = MAX_COUNT; // max arrary count is 10
     }
     
     Date[] dateValues = new Date[count];
     double[] heat = new double[count];
     String heatValue = "-1";
+    long time;
     int i = 0;    
     try{
-    	while(cursor.moveToNext()){
-    		dateValues[i] = new Date(cursor.getLong(TIMESTAMP_INDEX));
+    	while(i < MAX_COUNT && cursor.moveToNext()){
+    		time = cursor.getLong(TIMESTAMP_INDEX);
+    		dateValues[i] = new Date(time);
     		heatValue = cursor.getString(HEAT_INDEX);
     		heat[i] = Double.valueOf(heatValue);
-    		if(i>10)
-    			break;
     		i++;    		
         }
     }finally{
     	cursor.close();
     }
-    dates.add(dateValues);    
+    dates.add(dateValues); 
     values.add(heat);
 
-    int[] colors = new int[] { Color.GREEN };
-    PointStyle[] styles = new PointStyle[] { PointStyle.CIRCLE };
+    int[] colors = new int[] { Color.GREEN};
+    PointStyle[] styles = new PointStyle[] { PointStyle.CIRCLE};
     XYMultipleSeriesRenderer renderer = buildRenderer(colors, styles);
     
-    setChartSettings(renderer, "Temprature", "Time", "Celsius degrees", dateValues[0].getTime(),
-    		dateValues[dateValues.length - 1].getTime(), 32, 42, Color.LTGRAY, Color.BLUE);
-    
-    DebugUtils.Log(dateValues[0].getTime()+"");
+    setChartSettings(renderer, "Temprature", "Time", "Celcious Degrees", dates.get(0)[0].getTime(),
+    		dates.get(0)[dateValues.length - 1].getTime(), 32, 43, Color.DKGRAY, Color.BLUE);
 
-    renderer.setXLabels(10);
+    renderer.setXLabels(7);
     renderer.setYLabels(10);
     renderer.setXLabelsAlign(Align.CENTER);
     renderer.setYLabelsAlign(Align.RIGHT);
+    renderer.setMarginsColor(Color.parseColor("#FFFFFF"));
 
     return ChartFactory.getTimeChartView(context, buildDateDataset(titles, dates, values), renderer, "h:mm a");    
   }

@@ -1,8 +1,8 @@
-package com.wendesday.bippobippo;
+package com.wednesday.bippobippo;
 
 import java.util.ArrayList;
 
-import com.wendesday.bippobippo.network.NetworkCommunicator;
+import com.wednesday.bippobippo.network.NetworkCommunicator;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -29,22 +30,29 @@ public class SensorService extends Service {
 	private SharedPreferences mPref;
 	private int mState = STATE_DISCONNECTED;
 	private ContentResolverHelper mContentResolverHelper;
+	private Resources mResources;
 	
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_DISCONNECTED = 2;
 	
 	public static final String SHARED_PREF_NAME = "SensorServicePref";
 	public static final String DEVICE_ADDRESS_KEY = "deviceAddress";
-	public static final String ACTION_START = "com.wendesday.bippobippo.ACTION_START";
-	public static final String ACTION_STOP = "com.wendesday.bippobippo.ACTION_STOP";
+	public static final String ACTION_START = "com.wednesday.bippobippo.ACTION_START";
+	public static final String ACTION_STOP = "com.wednesday.bippobippo.ACTION_STOP";
 	
-	public static final String ACTION_BROADCAST_UPDATE_SENSORDATA = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_SENSORDATA";
-	public static final String ACTION_BROADCAST_UPDATE_HEAT = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_HEAT";
-	public static final String ACTION_BROADCAST_UPDATE_WET = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_WET";
-	public static final String ACTION_BROADCAST_UPDATE_BPM = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_BPM";
-	public static final String ACTION_BROADCAST_UPDATE_MIC = "com.wendesday.bippobippo.ACTION_BROADCAST_UPDATE_MIC";
-	public static final String EXTRA_SENSOR_DATA = "com.wendesday.bippobippo.EXTRA_SENSOR_DATA";
-	public static final String EXTRA_DOUBLE_DATA = "com.wendesday.bippobippo.EXTRA_DOUBLE_DATA";
+	public static final String ACTION_ALARM = "com.wednesday.bippobippo.ACTION_ALARM";
+	public static final String ACTION_HEAT_ALARM = "com.wednesday.bippobippo.ACTION_HEAT_ALARM";
+	public static final String ACTION_WET_ALARM = "com.wednesday.bippobippo.ACTION_WET_ALARM";
+	public static final String ACTION_BPM_ALARM = "com.wednesday.bippobippo.ACTION_BPM_ALARM";
+	public static final String ACTION_MIC_ALARM = "com.wednesday.bippobippo.ACTION_MIC_ALARM";
+	
+	public static final String ACTION_BROADCAST_UPDATE_SENSORDATA = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_SENSORDATA";
+	public static final String ACTION_BROADCAST_UPDATE_HEAT = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_HEAT";
+	public static final String ACTION_BROADCAST_UPDATE_WET = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_WET";
+	public static final String ACTION_BROADCAST_UPDATE_BPM = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_BPM";
+	public static final String ACTION_BROADCAST_UPDATE_MIC = "com.wednesday.bippobippo.ACTION_BROADCAST_UPDATE_MIC";
+	public static final String EXTRA_SENSOR_DATA = "com.wednesday.bippobippo.EXTRA_SENSOR_DATA";
+	public static final String EXTRA_DOUBLE_DATA = "com.wednesday.bippobippo.EXTRA_DOUBLE_DATA";
 
 	public static final int SENSORDATA_ARRAY_SIZE = 10;
 	
@@ -165,6 +173,8 @@ public class SensorService extends Service {
 		mContentResolverHelper = new ContentResolverHelper(getBaseContext());
 		mContentResolverHelper.open();
 		
+		mResources = getBaseContext().getResources();
+		
 		DebugUtils.Log("SensorService: Service Started");
 	
 // test
@@ -242,6 +252,14 @@ public class SensorService extends Service {
 							sendServerSensorData(sensorData);
 							mContentResolverHelper.insertSensorData(sensorData);
 							mContentResolverHelper.printLastSensorData();
+							
+							checkBabyStatus(sensorData);
+//							//test
+//							if (sensorData.getMic() > 100) {
+//								Intent in = new Intent(Constants.ACTION_ALARM);
+//								in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//								startActivity(in);
+//							}
 						}
 					}
 				}
@@ -366,5 +384,28 @@ public class SensorService extends Service {
 		Intent serverIntent = new Intent(Constants.ACTION_SEND_HEALTH_DATA);
 		serverIntent.putExtra(EXTRA_SENSOR_DATA, sensorData);
 		startService(serverIntent);
+	}
+	
+	private void checkBabyStatus(SensorDataModel sensorData) {
+		if (sensorData == null) {
+			return;
+		}
+		
+		if (sensorData.getHeat() > mResources.getInteger(R.integer.heat_alarm1_value)) {
+			startAlarmActivity(ACTION_HEAT_ALARM, sensorData);
+		} else if (sensorData.getWet() > 90) {
+			startAlarmActivity(ACTION_WET_ALARM, sensorData);
+		} else if (sensorData.getBpm() > mResources.getInteger(R.integer.bpm_alarm_high_value)) {
+			startAlarmActivity(ACTION_BPM_ALARM, sensorData);
+		} else if (sensorData.getMic() > mResources.getInteger(R.integer.mic_alarm_value)) {
+			startAlarmActivity(ACTION_MIC_ALARM, sensorData);
+		}
+	}
+	
+	private void startAlarmActivity(String action, SensorDataModel sensorData) {
+		Intent intent = new Intent(action);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra(EXTRA_SENSOR_DATA, sensorData);
+		startActivity(intent);		
 	}
 }

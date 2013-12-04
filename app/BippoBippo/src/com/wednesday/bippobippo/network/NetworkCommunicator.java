@@ -1,4 +1,4 @@
-package com.wendesday.bippobippo.network;
+package com.wednesday.bippobippo.network;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -29,11 +29,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 
-import com.wendesday.bippobippo.Constants;
-import com.wendesday.bippobippo.DebugUtils;
-import com.wendesday.bippobippo.SensorDataModel;
-import com.wendesday.bippobippo.SensorService;
-import com.wendesday.bippobippo.Utils;
+import com.wednesday.bippobippo.Constants;
+import com.wednesday.bippobippo.DebugUtils;
+import com.wednesday.bippobippo.SensorDataModel;
+import com.wednesday.bippobippo.SensorService;
+import com.wednesday.bippobippo.Utils;
 
 public class NetworkCommunicator extends Service {
 	

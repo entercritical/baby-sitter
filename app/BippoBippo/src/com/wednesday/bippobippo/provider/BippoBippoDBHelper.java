@@ -1,6 +1,6 @@
-package com.wendesday.bippobippo.provider;
+package com.wednesday.bippobippo.provider;
 
-import com.wendesday.bippobippo.BippoBippo;
+import com.wednesday.bippobippo.BippoBippo;
 
 import android.content.ContentValues;
 import android.content.Context;

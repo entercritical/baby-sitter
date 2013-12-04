@@ -6,6 +6,16 @@
     <string name="hello_world">Hello world!</string>
     <string name="connecting">Connecting</string>
     <string name="please_wait">Please wait...</string>
-    <string name="chart_summary">chart summary</string>
+    <string name="chart_summary">Chart summary</string>
+    <string name="stop">Stop</string>
+    <string name="first_aid">First aid</string>
+    <string name="emergency_call">Emergency call</string>
+    <string name="highest_temprature">Highest</string>
+    <string name="average_temprature">Average</string>
+    <string name="lowest_temprature">Lowest</string>
+    <string name="heat_alarm">Heat Alarm</string>
+    <string name="wet_alarm">Wet Alarm</string>
+    <string name="bpm_alarm">Bpm Alarm</string>
+    <string name="mic_alarm">Mic Alarm</string>
 
 </resources>
