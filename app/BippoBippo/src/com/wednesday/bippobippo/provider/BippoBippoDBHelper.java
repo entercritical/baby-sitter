@@ -43,7 +43,9 @@ public class BippoBippoDBHelper extends SQLiteOpenHelper {
 				+ BippoBippo.Person._ID + " INTEGER PRIMARY KEY, "
 				+ BippoBippo.Person.DISPLAY_NAME + " TEXT, "
 				+ BippoBippo.Person.PHONE_NUMBER + " TEXT, "
-				+ BippoBippo.Person.BIRTHDAY + " TEXT " + ");");
+				+ BippoBippo.Person.BIRTHDAY + " TEXT, " 
+				+ BippoBippo.Person.DEFAULT_TEMPRATURE + " TEXT, "
+				+ BippoBippo.Person.WET_SENSITIVITY + " TEXT " + " );");
 
 		// sensor data table
 		db.execSQL("CREATE TABLE " + BippoBippo.SensorData.TABLE_NAME + " ("

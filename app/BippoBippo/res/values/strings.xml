@@ -17,5 +17,17 @@
     <string name="wet_alarm">Wet Alarm</string>
     <string name="bpm_alarm">Bpm Alarm</string>
     <string name="mic_alarm">Mic Alarm</string>
-
+    <string name="setting_title">User credentials</string>
+    <string name="baby_name">Name :</string>
+    <string name="baby_name_hint">Enter baby\'s name</string>
+    <string name="phone_number">Number :</string>
+    <string name="phone_number_hint">Enter phone number</string>
+    <string name="baby_birth">Birthday :</string>
+    <string name="baby_birth_hint">baby\'s birthday</string>
+    <string name="baby_temprature">Temprature : </string>
+    <string name="baby_temp_hint">Default temprature</string>
+    <string name="baby_wet_sensitivity">Wet sensitivity : </string>
+    <string name="menu_chart">Show chart</string>
+    <string name="menu_settings">Settings</string>
+    <string name="confirm">Confirm</string>
 </resources>

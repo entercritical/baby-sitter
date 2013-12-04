@@ -9,6 +9,8 @@ public class PersonModel implements Parcelable {
 	private String mPhone;
 	private String mDisplayName;
 	private String mBirthDay;
+	private String mDefaultTemprature;
+	private String mWetSensitivity;
 
 	public PersonModel() {
 
@@ -18,12 +20,16 @@ public class PersonModel implements Parcelable {
 		mPhone = in.readString();
 		mDisplayName = in.readString();
 		mBirthDay = in.readString();
+		mDefaultTemprature = in.readString();
+		mWetSensitivity = in.readString();
 	}
 
 	public PersonModel(Builder builder) {
 		mPhone = builder.mPhone;
 		mDisplayName = builder.mDisplayName;
 		mBirthDay = builder.mBirthDay;
+		mDefaultTemprature = builder.mDefaultTemprature;
+		mWetSensitivity = builder.mWetSensitivity;		
 	}
 
 	public String getPhone() {
@@ -49,11 +55,30 @@ public class PersonModel implements Parcelable {
 	public void setBirthDay(String birthDay) {
 		this.mBirthDay = birthDay;
 	}
+	
+	public String getDefaultTemprature() {
+		return mDefaultTemprature;
+	}
+
+	public void setDefaultTemprature(String temprature) {
+		this.mDefaultTemprature = temprature;
+	}
+	
+	public String getWetSensitivity() {
+		return mWetSensitivity;
+	}
+
+	public void setWetSensitivity(String sensitivity) {
+		this.mWetSensitivity = sensitivity;
+	}
+
 
 	public static class Builder {
 		public String mPhone;
 		public String mDisplayName;
 		public String mBirthDay;
+		private String mDefaultTemprature;
+		private String mWetSensitivity;
 
 		public Builder() {
 		}
@@ -72,7 +97,17 @@ public class PersonModel implements Parcelable {
 			this.mBirthDay = birthDay;
 			return this;
 		}
-
+		
+		public Builder defaultTemprature(String temprature) {
+			this.mDefaultTemprature = temprature;
+			return this;
+		}
+		
+		public Builder wetSensitivity(String sensitivity) {
+			this.mWetSensitivity = sensitivity;
+			return this;
+		}
+		
 		public PersonModel build() {
 			return new PersonModel(this);
 		}
@@ -89,6 +124,8 @@ public class PersonModel implements Parcelable {
 		dest.writeString(mPhone);
 		dest.writeString(mDisplayName);
 		dest.writeString(mBirthDay);
+		dest.writeString(mDefaultTemprature);
+		dest.writeString(mWetSensitivity);
 	}
 	
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

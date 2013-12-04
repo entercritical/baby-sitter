@@ -1,5 +1,7 @@
 package com.wednesday.bippobippo;
 
+import com.wednesday.bippobippo.BippoBippo.Person;
+
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -76,6 +78,8 @@ public class ContentResolverHelper {
 		values.put(BippoBippo.Person.PHONE_NUMBER, person.getPhone());
 		values.put(BippoBippo.Person.DISPLAY_NAME, person.getDisplayName());
 		values.put(BippoBippo.Person.BIRTHDAY, person.getBirthDay());
+		values.put(BippoBippo.Person.DEFAULT_TEMPRATURE, person.getDefaultTemprature());
+		values.put(BippoBippo.Person.WET_SENSITIVITY, person.getWetSensitivity());
 		
 		return mContentResolver.insert(BippoBippo.Person.CONTENT_URI, values);
 	}
@@ -86,5 +90,19 @@ public class ContentResolverHelper {
 	
 	public int deletePersonALl() {
 		return 0;
+	}
+	
+	public int updatePerson(PersonModel person) {
+		if (mContentResolver == null || person == null) {
+			return 0;
+		}
+		ContentValues values = new ContentValues();
+		values.put(BippoBippo.Person.PHONE_NUMBER, person.getPhone());
+		values.put(BippoBippo.Person.DISPLAY_NAME, person.getDisplayName());
+		values.put(BippoBippo.Person.BIRTHDAY, person.getBirthDay());
+		values.put(BippoBippo.Person.DEFAULT_TEMPRATURE, person.getDefaultTemprature());
+		values.put(BippoBippo.Person.WET_SENSITIVITY, person.getWetSensitivity());
+		
+		return mContentResolver.update(Person.CONTENT_URI, values, null, null);
 	}
 }

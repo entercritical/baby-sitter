@@ -68,6 +68,14 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        
+        <activity android:name="com.wednesday.bippobippo.SettingsActivity">
+            <intent-filter>
+                <action android:name="com.wednesday.bippobippo.INIT_SETTING"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_SETTING"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
