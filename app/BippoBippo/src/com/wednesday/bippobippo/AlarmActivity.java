@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +28,8 @@ public class AlarmActivity extends Activity{
 //	private SensorDataReceiver mSensorDataReceiver = new SensorDataReceiver();
 	private SoundPool mSoundPool;
 	private int mSoundSiren;
+	private PersonModel mPerson;
+	private ContentResolverHelper mContentResolverHelper;
 	
 	Animation mAnimBlink;
 	
@@ -74,6 +77,16 @@ public class AlarmActivity extends Activity{
 			}
 		});
 		
+		mContentResolverHelper = new ContentResolverHelper(getBaseContext());
+		mContentResolverHelper.open();
+		
+		mPerson = mContentResolverHelper.getPerson();
+//		DebugUtils.Log("AlarmActivity: Person " + mPerson.getDisplayName() + " " 
+//				+ mPerson.getPhone() + " "
+//				+ mPerson.getBirthDay() + " "
+//				+ mPerson.getDefaultTemprature() + " "
+//				+ mPerson.getWetSensitivity() + " "
+//				+ mPerson.getEmergency());
 		
 //		IntentFilter filter = new IntentFilter();
 //        filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA);
@@ -117,8 +130,8 @@ public class AlarmActivity extends Activity{
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
+				Intent in = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPerson.getEmergency()));
+				startActivity(in);
 			}
 		});
 
@@ -174,6 +187,11 @@ public class AlarmActivity extends Activity{
 			mSoundPool.stop(mSoundSiren);
 			mSoundPool.release();
 			mSoundPool = null;
+		}
+		
+		if (mContentResolverHelper != null) {
+			mContentResolverHelper.close();
+			mContentResolverHelper = null;
 		}
 	}
 	

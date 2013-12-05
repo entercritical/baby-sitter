@@ -1,12 +1,12 @@
 package com.wednesday.bippobippo;
 
-import com.wednesday.bippobippo.BippoBippo.Person;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+
+import com.wednesday.bippobippo.BippoBippo.Person;
 
 public class ContentResolverHelper {
 	Context mContext;
@@ -106,5 +106,37 @@ public class ContentResolverHelper {
 		values.put(BippoBippo.Person.EMERGENCY_NUMBER, person.getEmergency());
 		
 		return mContentResolver.update(Person.CONTENT_URI, values, null, null);
+	}
+	
+	public static String[] PERSON_PROJECTION = new String[] {
+		Person.DISPLAY_NAME,
+		Person.PHONE_NUMBER,
+		Person.BIRTHDAY,
+		Person.DEFAULT_TEMPRATURE,
+		Person.WET_SENSITIVITY,
+        Person.EMERGENCY_NUMBER
+	};
+	
+	public PersonModel getPerson() {
+		if (mContentResolver == null) {
+			return null;
+		}
+		Cursor cur = mContentResolver.query(BippoBippo.Person.CONTENT_URI, PERSON_PROJECTION , null, null, null);
+		if(cur != null && cur.moveToFirst()){
+			PersonModel p = new PersonModel();
+			
+			p.setDisplayName(cur.getString(0));
+			p.setPhone(cur.getString(1));
+			p.setBirthDay(cur.getString(2));
+			p.setDefaultTemprature(cur.getString(3));
+			p.setWetSensitivity(cur.getString(4));
+			p.setEmergency(cur.getString(5));
+			
+			cur.close();
+			
+			return p;
+		} else {
+			return null;
+		}
 	}
 }

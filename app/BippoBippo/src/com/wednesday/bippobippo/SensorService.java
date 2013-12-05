@@ -31,7 +31,10 @@ public class SensorService extends Service {
 	private int mState = STATE_DISCONNECTED;
 	private ContentResolverHelper mContentResolverHelper;
 	private Resources mResources;
-	
+	private long mStartTimestamp;
+	private int mAlarmWetValue;
+	private static final long WET_IGNORE_TIME = 60000; // for humidity sensor, ignore 1 minute
+	private static final double WET_ALARM_CONSTANT = 0.184615385; // result by experiment
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_DISCONNECTED = 2;
 	
@@ -57,7 +60,6 @@ public class SensorService extends Service {
 	public static final int SENSORDATA_ARRAY_SIZE = 10;
 	
 	public static final char FLAG_GET_CURRENT_DATA = 'C';
-	
 	
 	private String mPhone;
 	private ArrayList<SensorDataModel> mSensorDataList = new ArrayList<SensorDataModel>();
@@ -175,6 +177,10 @@ public class SensorService extends Service {
 		
 		mResources = getBaseContext().getResources();
 		
+		// for Humidity Sensor
+		mStartTimestamp = System.currentTimeMillis();
+		mAlarmWetValue = 0;
+		
 		DebugUtils.Log("SensorService: Service Started");
 	
 // test
@@ -219,6 +225,9 @@ public class SensorService extends Service {
 		
 		mContentResolverHelper.close();
 		mContentResolverHelper = null;
+		
+		mStartTimestamp = 0;
+		mAlarmWetValue = 0;
 	}
 
 	/**
@@ -246,20 +255,23 @@ public class SensorService extends Service {
 						
 						setSensorDataList(output);
 						
-						if (BippoBippo.SensorData.MIC.equals(output[0])) {
-							SensorDataModel sensorData = (output.length == 2) ? mSensorDataList.get(0) : getAverageSensorData(mSensorDataList);
+						if (BippoBippo.SensorData.MIC.equals(output[0])) { // End of Data stream (Heat -> Wet -> Bpm -> Mic)
+							SensorDataModel sensorData;
+							
+							if (output.length == 2) { // Flag 'C' : get current data
+								sensorData = mSensorDataList.get(0);
+							} else {
+								sensorData = getAverageSensorData(mSensorDataList);
+							}
+							sensorData.setPhone(mPhone);
+							sensorData.setTimeStamp(System.currentTimeMillis());
+							
 							sendUISensorData(sensorData);
 							sendServerSensorData(sensorData);
 							mContentResolverHelper.insertSensorData(sensorData);
-							mContentResolverHelper.printLastSensorData();
+							//mContentResolverHelper.printLastSensorData();
 							
 							checkBabyStatus(sensorData);
-//							//test
-//							if (sensorData.getMic() > 100) {
-//								Intent in = new Intent(Constants.ACTION_ALARM);
-//								in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//								startActivity(in);
-//							}
 						}
 					}
 				}
@@ -335,8 +347,8 @@ public class SensorService extends Service {
 		SensorDataModel avg = new SensorDataModel();
 		int heat, wet, bpm, mic;
 		
-		avg.setPhone(mPhone);
-		avg.setTimeStamp(System.currentTimeMillis());
+		//avg.setPhone(mPhone);
+		//avg.setTimeStamp(System.currentTimeMillis());
 		heat = wet = bpm = mic = 0;
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -391,13 +403,24 @@ public class SensorService extends Service {
 			return;
 		}
 		
+		//for wet
+		if (mAlarmWetValue == 0 && mStartTimestamp + WET_IGNORE_TIME < System.currentTimeMillis()) {
+			int baseWet = sensorData.getWet();
+			mAlarmWetValue = baseWet + (int)((double)(100 - baseWet) * WET_ALARM_CONSTANT);
+			DebugUtils.Log("SensorService: Set Wet base = " + baseWet + " alarm = " + mAlarmWetValue);
+		}
+		
 		if (sensorData.getHeat() > mResources.getInteger(R.integer.heat_alarm1_value)) {
+			DebugUtils.Log("SensorService: HEAT Alarm");
 			startAlarmActivity(ACTION_HEAT_ALARM, sensorData);
-		} else if (sensorData.getWet() > 90) {
+		} else if (mAlarmWetValue != 0 && sensorData.getWet() > mAlarmWetValue) {
+			DebugUtils.Log("SensorService: WET Alarm");
 			startAlarmActivity(ACTION_WET_ALARM, sensorData);
 		} else if (sensorData.getBpm() > mResources.getInteger(R.integer.bpm_alarm_high_value)) {
+			DebugUtils.Log("SensorService: BPM Alarm");
 			startAlarmActivity(ACTION_BPM_ALARM, sensorData);
 		} else if (sensorData.getMic() > mResources.getInteger(R.integer.mic_alarm_value)) {
+			DebugUtils.Log("SensorService: MIC Alarm");
 			startAlarmActivity(ACTION_MIC_ALARM, sensorData);
 		}
 	}
