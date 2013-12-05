@@ -70,7 +70,7 @@ public final class BippoBippo {
 
         public static final String DISPLAY_NAME = "displayname";
         public static final String PHONE_NUMBER = "phone_number";
-
+        public static final String EMERGENCY_NUMBER = "emergency_number";
         public static final String BIRTHDAY = "birthday";
         public static final String DEFAULT_TEMPRATURE = "default_temprature";
         public static final String WET_SENSITIVITY = "wet_sensitivity";

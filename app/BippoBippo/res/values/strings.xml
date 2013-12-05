@@ -30,4 +30,6 @@
     <string name="menu_chart">Show chart</string>
     <string name="menu_settings">Settings</string>
     <string name="confirm">Confirm</string>
+    <string name="emergency">Emergency call : </string>
+    <string name="emergency_number">119</string>
 </resources>

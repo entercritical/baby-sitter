@@ -80,6 +80,7 @@ public class ContentResolverHelper {
 		values.put(BippoBippo.Person.BIRTHDAY, person.getBirthDay());
 		values.put(BippoBippo.Person.DEFAULT_TEMPRATURE, person.getDefaultTemprature());
 		values.put(BippoBippo.Person.WET_SENSITIVITY, person.getWetSensitivity());
+		values.put(BippoBippo.Person.EMERGENCY_NUMBER, person.getEmergency());
 		
 		return mContentResolver.insert(BippoBippo.Person.CONTENT_URI, values);
 	}
@@ -102,6 +103,7 @@ public class ContentResolverHelper {
 		values.put(BippoBippo.Person.BIRTHDAY, person.getBirthDay());
 		values.put(BippoBippo.Person.DEFAULT_TEMPRATURE, person.getDefaultTemprature());
 		values.put(BippoBippo.Person.WET_SENSITIVITY, person.getWetSensitivity());
+		values.put(BippoBippo.Person.EMERGENCY_NUMBER, person.getEmergency());
 		
 		return mContentResolver.update(Person.CONTENT_URI, values, null, null);
 	}

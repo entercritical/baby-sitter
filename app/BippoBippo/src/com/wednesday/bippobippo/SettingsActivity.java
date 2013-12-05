@@ -33,6 +33,7 @@ public class SettingsActivity extends Activity {
 	private EditText mNumberText;
 	private EditText mBirthday;
 	private EditText mTemprature;
+	private EditText mEmergency;
 	private SeekBar mWetSensitivity;
 	private TextView mSensitivityValue;
 	private Button mConfirmButton;
@@ -46,7 +47,8 @@ public class SettingsActivity extends Activity {
 		Person.PHONE_NUMBER,
 		Person.BIRTHDAY,
 		Person.DEFAULT_TEMPRATURE,
-		Person.WET_SENSITIVITY
+		Person.WET_SENSITIVITY,
+        Person.EMERGENCY_NUMBER
 	};
 	
 	private final int NAME = 0;
@@ -54,6 +56,7 @@ public class SettingsActivity extends Activity {
 	private final int BIRTHDAY = 2;
 	private final int TEMPRATURE = 3;
 	private final int SENSITIVITY = 4;
+	private final int EMERGENCY = 5;
 	
 	public static final String mFormat = "yyyy-MM-dd";
 
@@ -69,6 +72,7 @@ public class SettingsActivity extends Activity {
 		mWetSensitivity = (SeekBar)findViewById(R.id.wet_seek);
 		mSensitivityValue = (TextView)findViewById(R.id.wet_value);
 		mConfirmButton = (Button)findViewById(R.id.setting_confirm);
+		mEmergency = (EditText)findViewById(R.id.emergencynumber_input);
 		
 		Intent intent = getIntent();
 		mIntentAction = intent.getAction();
@@ -104,6 +108,7 @@ public class SettingsActivity extends Activity {
 		if(cur != null && cur.moveToFirst()){
 			mNameText.setText(cur.getString(NAME));
 			mNumberText.setText(cur.getString(NUMBER));	
+			mEmergency.setText(cur.getString(EMERGENCY));
 			
 			String birthday = cur.getString(BIRTHDAY);
 			try {
@@ -118,8 +123,7 @@ public class SettingsActivity extends Activity {
 			}
 			mBirthday.setText(birthday);
 			
-			mTemprature.setText(cur.getString(TEMPRATURE));
-			
+			mTemprature.setText(cur.getString(TEMPRATURE));			
 			String sensitivity = cur.getString(SENSITIVITY);
 			if(!TextUtils.isEmpty(sensitivity)){
 				mWetSensitivity.setProgress(Integer.valueOf(sensitivity)+5);
@@ -135,6 +139,7 @@ public class SettingsActivity extends Activity {
 		String birth = mBirthday.getText().toString();
 		String temprature = mTemprature.getText().toString();
 		String sensitivity = (String) mSensitivityValue.getText();
+		String emergency = mEmergency.getText().toString();
 		
 		if(TextUtils.isEmpty(name) || TextUtils.isEmpty(number)
 				|| TextUtils.isEmpty(temprature)){
@@ -144,18 +149,22 @@ public class SettingsActivity extends Activity {
 		}
 		
 		PersonModel person = new PersonModel.Builder().displayName(name).phone(number)
-				.birthDay(birth).defaultTemprature(temprature).wetSensitivity(sensitivity).build();
+				.birthDay(birth).defaultTemprature(temprature).wetSensitivity(sensitivity)
+				.emgergency(emergency).build();
 		if(Constants.ACTION_VIEW_SETTINGS.equals(mIntentAction)){		
-			mContentResolverHelper.updatePerson(person);
+			mContentResolverHelper.updatePerson(person);			
+			Intent intent = new Intent(Constants.ACTION_UPDATE_USER_DATA);
+			intent.putExtra(Constants.EXTRA_USER_DATA, person);
+			startService(intent);
 		}else{
 			Uri uri = mContentResolverHelper.insertPerson(person);
 			if(uri != null){
 				savePreferences();
 			}
+			Intent intent = new Intent(Constants.ACTION_SEND_USER_DATA);
+			intent.putExtra(Constants.EXTRA_USER_DATA, person);
+			startService(intent);
 		}
-		
-		Intent intent = new Intent(Constants.ACTION_SEND_USER_DATA);
-		startService(intent);
 		
 		finish();
 		
