@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/heatText"
         android:layout_below="@+id/heatText"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:drawableLeft="@drawable/diaper"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
@@ -31,11 +31,12 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/wetText"
         android:layout_below="@+id/wetText"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:drawableLeft="@drawable/heart_beat"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/micText"
@@ -43,10 +44,22 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/bpmText"
         android:layout_below="@+id/bpmText"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:drawableLeft="@drawable/mic"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:textSize="20dp" />
+    
+    <TextView
+        android:id="@+id/timestampText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/micText"
+        android:layout_below="@+id/micText"
+        android:layout_marginTop="20dp"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:textSize="20dp"
+        android:visibility="gone" />
 
 </RelativeLayout>

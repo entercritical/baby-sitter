@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
 	private ProgressDialog mProgressDialog;
 	private LinearLayout mButtonsLayout;
 	
+	//private TextView mTimeStamp;
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class MainActivity extends Activity {
         mTextView[1] = (TextView)findViewById(R.id.wetText);
         mTextView[2] = (TextView)findViewById(R.id.bpmText);
         mTextView[3] = (TextView)findViewById(R.id.micText);
+        //mTimeStamp = (TextView)findViewById(R.id.timestampText);
         
         mButtonsLayout = (LinearLayout)findViewById(R.id.buttonsLayout);
         mButtonsLayout.setVisibility(View.INVISIBLE);
@@ -149,7 +152,9 @@ public class MainActivity extends Activity {
             	mTextView[0].setText(String.valueOf(sensorData.getHeat()));
             	mTextView[1].setText(String.valueOf(sensorData.getWet()));
             	mTextView[2].setText(String.valueOf(sensorData.getBpm()));
-            	mTextView[3].setText(String.valueOf(sensorData.getMic()));            	
+            	mTextView[3].setText(String.valueOf(sensorData.getMic()));     
+            	
+            	//mTimeStamp.setText(String.valueOf(sensorData.getTimeStamp()));
             }
         }
     }
