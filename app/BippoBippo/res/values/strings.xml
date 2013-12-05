@@ -13,10 +13,10 @@
     <string name="highest_temprature">Highest</string>
     <string name="average_temprature">Average</string>
     <string name="lowest_temprature">Lowest</string>
-    <string name="heat_alarm">Heat Alarm</string>
-    <string name="wet_alarm">Wet Alarm</string>
+    <string name="heat_alarm">has a fever!</string>
+    <string name="wet_alarm">is peeing!</string>
     <string name="bpm_alarm">Bpm Alarm</string>
-    <string name="mic_alarm">Mic Alarm</string>
+    <string name="mic_alarm">is crying!</string>
     <string name="setting_title">User credentials</string>
     <string name="baby_name">Name :</string>
     <string name="baby_name_hint">Enter baby\'s name</string>
@@ -32,4 +32,8 @@
     <string name="confirm">Confirm</string>
     <string name="emergency">Emergency call : </string>
     <string name="emergency_number">119</string>
+    <string name="quiet">Quiet</string>
+    <string name="loud">Loud</string>
+    <string name="dry">Dry</string>
+    <string name="wet">Wet</string>
 </resources>

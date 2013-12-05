@@ -33,8 +33,10 @@ public class SensorService extends Service {
 	private Resources mResources;
 	private long mStartTimestamp;
 	private int mAlarmWetValue;
+
 	private static final long WET_IGNORE_TIME = 60000; // for humidity sensor, ignore 1 minute
 	private static final double WET_ALARM_CONSTANT = 0.184615385; // result by experiment
+
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_DISCONNECTED = 2;
 	
@@ -265,6 +267,15 @@ public class SensorService extends Service {
 							}
 							sensorData.setPhone(mPhone);
 							sensorData.setTimeStamp(System.currentTimeMillis());
+							String wetString;
+							if (mAlarmWetValue == 0 || sensorData.getWet() <= mAlarmWetValue) {
+								wetString = mResources.getString(R.string.dry);
+							} else {
+								wetString = mResources.getString(R.string.wet);
+							}
+							sensorData.setWetString(wetString);
+							sensorData.setMicString(sensorData.getMic() > mResources.getInteger(R.integer.mic_alarm_value) ? 
+									mResources.getString(R.string.loud) : mResources.getString(R.string.quiet));
 							
 							sendUISensorData(sensorData);
 							sendServerSensorData(sensorData);

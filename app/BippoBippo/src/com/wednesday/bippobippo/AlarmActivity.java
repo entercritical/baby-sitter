@@ -53,6 +53,13 @@ public class AlarmActivity extends Activity{
 		R.string.bpm_alarm,
 		R.string.mic_alarm
 	};
+	
+	private static final int[] mImageRes = {
+		R.drawable.baby_fever_icon,
+		R.drawable.baby_peeing_icon,
+		R.drawable.baby_crying_icon,
+		R.drawable.baby_crying_icon
+	};
 	 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -152,15 +159,15 @@ public class AlarmActivity extends Activity{
         	return;
         }
         
-        mBabyStateImage.setImageResource(R.drawable.baby_crying_icon);
-        getActionBar().setTitle(mTitleRes[stateIndex]);
+        mBabyStateImage.setImageResource(mImageRes[stateIndex]);
+        getActionBar().setTitle("Baby " + getResources().getString(mTitleRes[stateIndex]));
         mTextView[stateIndex].setTextColor(0xFFFF0000);
         mTextView[stateIndex].startAnimation(mAnimBlink);
         
-        mTextView[HEAT_INDEX].setText(String.valueOf(sensor.getHeat()));
-        mTextView[WET_INDEX].setText(String.valueOf(sensor.getWet()));
+        mTextView[HEAT_INDEX].setText(sensor.getHeatString());
+        mTextView[WET_INDEX].setText(sensor.getWetString());
         mTextView[BPM_INDEX].setText(String.valueOf(sensor.getBpm()));
-        mTextView[MIC_INDEX].setText(String.valueOf(sensor.getMic()));		
+        mTextView[MIC_INDEX].setText(sensor.getMicString());		
 	}
 
 	@Override
@@ -209,10 +216,10 @@ public class AlarmActivity extends Activity{
             if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
 
             	sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
-            	mTextView[HEAT_INDEX].setText(String.valueOf(sensorData.getHeat()));
-            	mTextView[WET_INDEX].setText(String.valueOf(sensorData.getWet()));
+            	mTextView[HEAT_INDEX].setText(sensorData.getHeatString());
+            	mTextView[WET_INDEX].setText(sensorData.getWetString());
             	mTextView[BPM_INDEX].setText(String.valueOf(sensorData.getBpm()));
-            	mTextView[MIC_INDEX].setText(String.valueOf(sensorData.getMic()));            	
+            	mTextView[MIC_INDEX].setText(sensorData.getMicString());            	
             }
         }
     }

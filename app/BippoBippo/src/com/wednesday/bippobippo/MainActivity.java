@@ -128,31 +128,32 @@ public class MainActivity extends Activity {
             double value;
             SensorDataModel sensorData;
             
-            if (SensorService.ACTION_BROADCAST_UPDATE_HEAT.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[0].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_WET.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[1].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_BPM.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[2].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_MIC.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[3].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
+//            if (SensorService.ACTION_BROADCAST_UPDATE_HEAT.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[0].setText(String.valueOf(value));
+//            } else if (SensorService.ACTION_BROADCAST_UPDATE_WET.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[1].setText(String.valueOf(value));
+//            } else if (SensorService.ACTION_BROADCAST_UPDATE_BPM.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[2].setText(String.valueOf(value));
+//            } else if (SensorService.ACTION_BROADCAST_UPDATE_MIC.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[3].setText(String.valueOf(value));
+//            } else 
+            if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
             	if (mProgressDialog != null && mProgressDialog.isShowing()) {
             		mProgressDialog.dismiss();
             	}
             	sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
-            	mTextView[0].setText(String.valueOf(sensorData.getHeat()));
-            	mTextView[1].setText(String.valueOf(sensorData.getWet()));
+            	mTextView[0].setText(sensorData.getHeatString());
+            	mTextView[1].setText(sensorData.getWetString());
             	mTextView[2].setText(String.valueOf(sensorData.getBpm()));
-            	mTextView[3].setText(String.valueOf(sensorData.getMic()));     
+            	mTextView[3].setText(sensorData.getMicString());     
             	
             	//mTimeStamp.setText(String.valueOf(sensorData.getTimeStamp()));
             }

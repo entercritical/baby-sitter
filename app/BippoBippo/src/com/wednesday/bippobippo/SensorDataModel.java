@@ -12,6 +12,8 @@ public class SensorDataModel implements Parcelable {
 	private int mWet;
 	private int mBpm;
 	private int mMic;
+	private String mWetString;
+	private String mMicString;
 
 	public SensorDataModel() {
 
@@ -24,6 +26,8 @@ public class SensorDataModel implements Parcelable {
 		mWet = builder.mWet;
 		mBpm = builder.mBpm;
 		mMic = builder.mMic;
+		mWetString = builder.mWetString;
+		mMicString = builder.mMicString;
 	}
 
 	public SensorDataModel(Parcel in) {
@@ -33,6 +37,8 @@ public class SensorDataModel implements Parcelable {
 		mWet = in.readInt();
 		mBpm = in.readInt();
 		mMic = in.readInt();
+		mWetString = in.readString();
+		mMicString = in.readString();
 	}
 
 	public String getPhone() {
@@ -83,6 +89,26 @@ public class SensorDataModel implements Parcelable {
 		this.mMic = mMic;
 	}
 
+	public String getWetString() {
+		return mWetString;
+	}
+
+	public void setWetString(String mWetString) {
+		this.mWetString = mWetString;
+	}
+
+	public String getMicString() {
+		return mMicString;
+	}
+
+	public void setMicString(String mMicString) {
+		this.mMicString = mMicString;
+	}
+	
+	public String getHeatString() {
+		return String.valueOf(mHeat) + " กษ";
+	}
+
 	public static class Builder {
 		private String mPhone;
 		private long mTimeStamp;
@@ -90,6 +116,8 @@ public class SensorDataModel implements Parcelable {
 		private int mWet;
 		private int mBpm;
 		private int mMic;
+		private String mWetString;
+		private String mMicString;
 
 		public Builder() {
 		}
@@ -123,6 +151,16 @@ public class SensorDataModel implements Parcelable {
 			mMic = mic;
 			return this;
 		}
+		
+		public Builder wetString(String wetString) {
+			mWetString = wetString;
+			return this;
+		}
+		
+		public Builder micString(String micString) {
+			mMicString = micString;
+			return this;
+		}
 
 		public SensorDataModel build() {
 			return new SensorDataModel(this);
@@ -143,6 +181,8 @@ public class SensorDataModel implements Parcelable {
 		dest.writeInt(mWet);
 		dest.writeInt(mBpm);
 		dest.writeInt(mMic);
+		dest.writeString(mWetString);
+		dest.writeString(mMicString);
 	}
 
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -162,6 +202,8 @@ public class SensorDataModel implements Parcelable {
 		mWet = 0;
 		mBpm = 0;
 		mMic = 0;
+		mWetString = "";
+		mMicString = "";
 	}
 	
 	 /**
