@@ -36,4 +36,6 @@
     <string name="loud">Loud</string>
     <string name="dry">Dry</string>
     <string name="wet">Wet</string>
+    <string name="chart_period">Chart period</string>
+    <string name="chart_prompt">Select period</string>
 </resources>
