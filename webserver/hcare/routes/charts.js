@@ -13,19 +13,20 @@ var healthclt = db.collection('healthinfo');
 var guideclt = db.collection('guide');
 
 
-exports.index = function(request, response){
+exports.list = function(request, response){
 	var id = request.param('id');
 	var operation = request.param('operation');
 
 	var start = new Date();
 	start.setDate(start.getDate()-operation);
 
-	var criteria  = {user_id:id, created:{$gt:start}};
-	var projection = {user_id:1, heat:1, id:0};
+//	var criteria  = {user_id:id, created:{$gt:start}};
+	var criteria  = {};
+	var projection = {timestamp:1, heat:1, _id:0};
 	
 
 	console.log('id=[%s] op=[%d] operation=[%s] dats[%s]', id, operation, operation, start);
-
+/*
 	if(id){
 		if(typeof operation == "undefined"){
 			console.log('id defined, op undefined\n');
@@ -46,9 +47,10 @@ exports.index = function(request, response){
 			console.log('id undefined, op undefined\n');
 		}
 	}	
-
+*/
 	healthclt.find(criteria, projection, function (error, data){
-		response.render('chart.jade', data);
+		console.log('health info find\n', error, data);
+		response.render('chart.jade', {dbdata:data, test:'chart test'});
 //		response.writeHead(200, {"Content-Type": "application/json"});
 //		response.write(JSON.stringify(data));
 //  		response.end();

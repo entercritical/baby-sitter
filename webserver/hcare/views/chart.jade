@@ -1,0 +1,44 @@
+doctype 5
+html
+	head
+		meta(charset="utf-8")
+	
+		title= test   	
+		script(src="/javascripts/util/d3.v3.min.js")
+		script(src="/javascripts/util/build/xcharts.js")
+		link(rel="stylesheet" href="/stylesheets/styles.css")
+	body
+		h1= test
+		h2= dbdata[10].timestamp
+		h3= dbdata.length
+		hr
+		figure#myChart(style="width: 1400px; height: 300px;")
+		script
+			document.write(dbdata[0].heat);
+			var data = {
+			"xScale": "ordinal",
+			"yScale": "linear",
+			"main": [
+			{
+			"className": ".pizza",
+			"data": [
+			{
+			"x": "Pepperoni",
+			"y": 4
+			},
+			{
+			"x": "Cheese",
+			"y": 8
+			}
+			]
+			}
+			]	
+			};
+			for (i=0;i<dbdata.length;i++)
+			{
+			data.main[0].data[i].x = "ashton";
+			data.main[0].data[i].y = dbdata[i].heat;
+			}
+			var myChart = new xChart('bar', data, '#myChart');
+		
+//		script(src="/javascripts/xchart.js")

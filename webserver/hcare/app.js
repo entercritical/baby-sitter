@@ -7,6 +7,7 @@ var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
 var healthinfo = require('./routes/healthinfo');
+var charts = require('./routes/charts');
 var http = require('http');
 var path = require('path');
 
@@ -20,8 +21,9 @@ var healthclt = db.collection('healthinfo');
 
 
 // all environments
-app.set('port', 52277);
+app.set('port', 52273);
 app.set('views', path.join(__dirname, 'views'));
+app.set('public', path.join(__dirname, 'public'));
 app.set('view engine', 'jade');
 
 app.use(express.favicon());
@@ -48,8 +50,11 @@ app.del('/user/:id', user.del);
 app.post('/healthinfo/:id', healthinfo.add);
 
 //query user health infomation
-app.get('/healthinfo/:id?/:operation?', healthinfo.list);
+//app.get('/healthinfo/:id?/:operation?', healthinfo.list);
+app.get('/healthinfo/:operation?', healthinfo.list);
 
+//chart home page
+app.get('/charts/:id?/:operation?', charts.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
