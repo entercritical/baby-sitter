@@ -1,6 +1,6 @@
 package com.wednesday.bippobippo.provider;
 
-import com.wednesday.bippobippo.BippoBippo;
+import java.util.Random;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.wednesday.bippobippo.BippoBippo;
 
 
 /**
@@ -43,7 +45,10 @@ public class BippoBippoDBHelper extends SQLiteOpenHelper {
 				+ BippoBippo.Person._ID + " INTEGER PRIMARY KEY, "
 				+ BippoBippo.Person.DISPLAY_NAME + " TEXT, "
 				+ BippoBippo.Person.PHONE_NUMBER + " TEXT, "
-				+ BippoBippo.Person.BIRTHDAY + " TEXT " + ");");
+				+ BippoBippo.Person.EMERGENCY_NUMBER + " TEXT, "
+				+ BippoBippo.Person.BIRTHDAY + " TEXT, " 
+				+ BippoBippo.Person.DEFAULT_TEMPRATURE + " TEXT, "
+				+ BippoBippo.Person.WET_SENSITIVITY + " TEXT " + " );");
 
 		// sensor data table
 		db.execSQL("CREATE TABLE " + BippoBippo.SensorData.TABLE_NAME + " ("
@@ -110,67 +115,82 @@ public class BippoBippoDBHelper extends SQLiteOpenHelper {
 			return;
 		}
 
-		long time = System.currentTimeMillis();
+    	Random random = new Random();
+    	long time = System.currentTimeMillis();
+    	int heat = 34 + random.nextInt(6);
+    	int bpm = 70 + random.nextInt(80);
+    	int mic = random.nextInt(10);
+    	int wet = random.nextInt(1);
+
 
 		ContentValues values = new ContentValues();
-
-		values.put(BippoBippo.SensorData.HEAT, "38.2");
-		values.put(BippoBippo.SensorData.WET, "1");
-		values.put(BippoBippo.SensorData.BPM, "110");
-		values.put(BippoBippo.SensorData.MIC, "60");
-		values.put(BippoBippo.SensorData.TIMESTAMP, time);
-	    db.insert(BippoBippo.SensorData.TABLE_NAME,
-				null, values);
-
-		values.clear();
-		time = System.currentTimeMillis();
-		values.put(BippoBippo.SensorData.HEAT, "35");
-		values.put(BippoBippo.SensorData.WET, "0");
-		values.put(BippoBippo.SensorData.BPM, "100");
-		values.put(BippoBippo.SensorData.MIC, "10");
-		values.put(BippoBippo.SensorData.TIMESTAMP, time);
-	    db.insert(BippoBippo.SensorData.TABLE_NAME,
-				null, values);
-
-		values.clear();
-		time = System.currentTimeMillis();
-		values.put(BippoBippo.SensorData.HEAT, "36.5");
-		values.put(BippoBippo.SensorData.WET, "0");
-		values.put(BippoBippo.SensorData.BPM, "150");
-		values.put(BippoBippo.SensorData.MIC, "10");
-		values.put(BippoBippo.SensorData.TIMESTAMP, time);
-	    db.insert(BippoBippo.SensorData.TABLE_NAME,
-				null, values);
-
-		values.clear();
-		time = System.currentTimeMillis();
-		values.put(BippoBippo.SensorData.HEAT, "38");
-		values.put(BippoBippo.SensorData.WET, "1");
-		values.put(BippoBippo.SensorData.BPM, "150");
-		values.put(BippoBippo.SensorData.MIC, "11");
-		values.put(BippoBippo.SensorData.TIMESTAMP, time);
-	    db.insert(BippoBippo.SensorData.TABLE_NAME,
-				null, values);
-
-		values.clear();
-		time = System.currentTimeMillis();
-		values.put(BippoBippo.SensorData.HEAT, "33");
-		values.put(BippoBippo.SensorData.WET, "1");
-		values.put(BippoBippo.SensorData.BPM, "180");
-		values.put(BippoBippo.SensorData.MIC, "10");
-		values.put(BippoBippo.SensorData.TIMESTAMP, time);
-	    db.insert(BippoBippo.SensorData.TABLE_NAME,
-				null, values);
-	    
-		values.clear();
-		time = System.currentTimeMillis();
-		values.put(BippoBippo.SensorData.HEAT, "35");
-		values.put(BippoBippo.SensorData.WET, "1");
-		values.put(BippoBippo.SensorData.BPM, "90");
-		values.put(BippoBippo.SensorData.MIC, "100");
-		values.put(BippoBippo.SensorData.TIMESTAMP, time);
-	    db.insert(BippoBippo.SensorData.TABLE_NAME,
-				null, values);
+        
+		for(int i=0; i<5000; i++){
+			values.put(BippoBippo.SensorData.HEAT, heat);
+			values.put(BippoBippo.SensorData.WET, wet);
+			values.put(BippoBippo.SensorData.BPM, bpm);
+			values.put(BippoBippo.SensorData.MIC, mic);
+			values.put(BippoBippo.SensorData.TIMESTAMP, time);
+		    db.insert(BippoBippo.SensorData.TABLE_NAME,
+					null, values);
+		    time = time + (10*1000);
+	        heat = 34 + random.nextInt(6);
+	    	bpm = 70 + random.nextInt(80);
+	    	mic = random.nextInt(10);
+	    	wet = random.nextInt(1);
+			
+		}
+//
+//
+//		values.clear();
+//		time = System.currentTimeMillis();
+//		values.put(BippoBippo.SensorData.HEAT, "35");
+//		values.put(BippoBippo.SensorData.WET, "0");
+//		values.put(BippoBippo.SensorData.BPM, "100");
+//		values.put(BippoBippo.SensorData.MIC, "10");
+//		values.put(BippoBippo.SensorData.TIMESTAMP, time);
+//	    db.insert(BippoBippo.SensorData.TABLE_NAME,
+//				null, values);
+//
+//		values.clear();
+//		time = System.currentTimeMillis();
+//		values.put(BippoBippo.SensorData.HEAT, "36.5");
+//		values.put(BippoBippo.SensorData.WET, "0");
+//		values.put(BippoBippo.SensorData.BPM, "150");
+//		values.put(BippoBippo.SensorData.MIC, "10");
+//		values.put(BippoBippo.SensorData.TIMESTAMP, time);
+//	    db.insert(BippoBippo.SensorData.TABLE_NAME,
+//				null, values);
+//
+//		values.clear();
+//		time = System.currentTimeMillis();
+//		values.put(BippoBippo.SensorData.HEAT, "38");
+//		values.put(BippoBippo.SensorData.WET, "1");
+//		values.put(BippoBippo.SensorData.BPM, "150");
+//		values.put(BippoBippo.SensorData.MIC, "11");
+//		values.put(BippoBippo.SensorData.TIMESTAMP, time);
+//	    db.insert(BippoBippo.SensorData.TABLE_NAME,
+//				null, values);
+//
+//		values.clear();
+//		time = System.currentTimeMillis();
+//		values.put(BippoBippo.SensorData.HEAT, "33");
+//		values.put(BippoBippo.SensorData.WET, "1");
+//		values.put(BippoBippo.SensorData.BPM, "180");
+//		values.put(BippoBippo.SensorData.MIC, "10");
+//		values.put(BippoBippo.SensorData.TIMESTAMP, time);
+//	    db.insert(BippoBippo.SensorData.TABLE_NAME,
+//				null, values);
+//	    
+//		values.clear();
+//		time = System.currentTimeMillis();
+//		values.put(BippoBippo.SensorData.HEAT, "35");
+//		values.put(BippoBippo.SensorData.WET, "1");
+//		values.put(BippoBippo.SensorData.BPM, "90");
+//		values.put(BippoBippo.SensorData.MIC, "100");
+//		values.put(BippoBippo.SensorData.TIMESTAMP, time);
+//	    db.insert(BippoBippo.SensorData.TABLE_NAME,
+//				null, values);
 
 	}
 

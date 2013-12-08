@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer name="heat_alarm1_value">38</integer>
+	<integer name="heat_alarm2_value">39</integer>
+	<integer name="wet_alarm_delta_value">2</integer>
+	<integer name="bpm_alarm_high_value">250</integer>
+	<integer name="bpm_alarm_low_value">40</integer>
+	<integer name="mic_alarm_value">200</integer>
+</resources>

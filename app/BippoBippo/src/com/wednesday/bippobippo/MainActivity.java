@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
@@ -28,15 +29,26 @@ public class MainActivity extends Activity {
 	private ProgressDialog mProgressDialog;
 	private LinearLayout mButtonsLayout;
 	
+	//private TextView mTimeStamp;
+	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        // Application initiation
+        if(!"1".equals(getPreference())){
+        	// User ought to set the default values
+        	Intent intent = new Intent(Constants.ACTION_INIT_SETTINGS);
+			startActivity(intent);        	
+        }
+        
         mTextView[0] = (TextView)findViewById(R.id.heatText);
         mTextView[1] = (TextView)findViewById(R.id.wetText);
         mTextView[2] = (TextView)findViewById(R.id.bpmText);
         mTextView[3] = (TextView)findViewById(R.id.micText);
+        //mTimeStamp = (TextView)findViewById(R.id.timestampText);
         
         mButtonsLayout = (LinearLayout)findViewById(R.id.buttonsLayout);
         mButtonsLayout.setVisibility(View.INVISIBLE);
@@ -92,13 +104,15 @@ public class MainActivity extends Activity {
         //networkThread.start();      
     }
 
-    @Override
+    private String getPreference() {
+    	SharedPreferences pref = getSharedPreferences(Constants.PREF_SETTINGS, MODE_PRIVATE);
+    	return pref.getString(Constants.PREF_KEY, "0");
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu);
-        
-    	// chart menu
-    	menu.add(0, 1, Menu.NONE, "Show chart");
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
     
@@ -114,31 +128,34 @@ public class MainActivity extends Activity {
             double value;
             SensorDataModel sensorData;
             
-            if (SensorService.ACTION_BROADCAST_UPDATE_HEAT.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[0].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_WET.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[1].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_BPM.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[2].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_MIC.equals(action)) {
-            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
- 
-        		mTextView[3].setText(String.valueOf(value));
-            } else if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
+//            if (SensorService.ACTION_BROADCAST_UPDATE_HEAT.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[0].setText(String.valueOf(value));
+//            } else if (SensorService.ACTION_BROADCAST_UPDATE_WET.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[1].setText(String.valueOf(value));
+//            } else if (SensorService.ACTION_BROADCAST_UPDATE_BPM.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[2].setText(String.valueOf(value));
+//            } else if (SensorService.ACTION_BROADCAST_UPDATE_MIC.equals(action)) {
+//            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
+// 
+//        		mTextView[3].setText(String.valueOf(value));
+//            } else 
+            if (SensorService.ACTION_BROADCAST_UPDATE_SENSORDATA.equals(action)) {
             	if (mProgressDialog != null && mProgressDialog.isShowing()) {
             		mProgressDialog.dismiss();
             	}
             	sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
-            	mTextView[0].setText(String.valueOf(sensorData.getHeat()));
-            	mTextView[1].setText(String.valueOf(sensorData.getWet()));
+            	mTextView[0].setText(sensorData.getHeatString());
+            	mTextView[1].setText(sensorData.getWetString());
             	mTextView[2].setText(String.valueOf(sensorData.getBpm()));
-            	mTextView[3].setText(String.valueOf(sensorData.getMic()));            	
+            	mTextView[3].setText(sensorData.getMicString());     
+            	
+            	//mTimeStamp.setText(String.valueOf(sensorData.getTimeStamp()));
             }
         }
     }
@@ -168,10 +185,19 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if(item.getItemId() == 1){
-			// disaplay a chart view
-			Intent intent = new Intent(Constants.ACTION_VIEW_CHART);
-			startActivity(intent);
+		switch(item.getItemId()){
+			case R.id.action_chart :{
+				// disaplay a chart view
+				Intent intent = new Intent(Constants.ACTION_VIEW_CHART);
+				startActivity(intent);
+				break;
+			}
+			case R.id.action_settings:{
+				// disaplay a settings view
+				Intent intent = new Intent(Constants.ACTION_VIEW_SETTINGS);
+				startActivity(intent);
+				break;
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}

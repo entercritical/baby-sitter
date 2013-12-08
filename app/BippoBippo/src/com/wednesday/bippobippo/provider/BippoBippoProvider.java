@@ -76,6 +76,9 @@ public class BippoBippoProvider extends ContentProvider {
         sPersonProjectionMap.put(BippoBippo.Person.DISPLAY_NAME, BippoBippo.Person.DISPLAY_NAME);
         sPersonProjectionMap.put(BippoBippo.Person.PHONE_NUMBER, BippoBippo.Person.PHONE_NUMBER);
         sPersonProjectionMap.put(BippoBippo.Person.BIRTHDAY, BippoBippo.Person.BIRTHDAY);
+        sPersonProjectionMap.put(BippoBippo.Person.DEFAULT_TEMPRATURE, BippoBippo.Person.DEFAULT_TEMPRATURE);
+        sPersonProjectionMap.put(BippoBippo.Person.WET_SENSITIVITY, BippoBippo.Person.WET_SENSITIVITY);
+        sPersonProjectionMap.put(BippoBippo.Person.EMERGENCY_NUMBER, BippoBippo.Person.EMERGENCY_NUMBER);
         
         sSensorDataProjectionMap = new HashMap<String, String>();
         // Maps the string "_ID" to the column name "_ID"

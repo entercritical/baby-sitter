@@ -10,6 +10,7 @@ import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -31,6 +32,7 @@ import android.os.Process;
 
 import com.wednesday.bippobippo.Constants;
 import com.wednesday.bippobippo.DebugUtils;
+import com.wednesday.bippobippo.PersonModel;
 import com.wednesday.bippobippo.SensorDataModel;
 import com.wednesday.bippobippo.SensorService;
 import com.wednesday.bippobippo.Utils;
@@ -44,6 +46,7 @@ public class NetworkCommunicator extends Service {
 	public final int SEND_USER_DATA = 1;
 	public final int SEND_HEALTH_DATA = 2 ;
 	public final int GET_HEALTH_DATA = 3;
+	public final int UPDATE_USER_DATA = 4;
 	
     /** Timeout (in ms) we specify for each http request */
     public static final int HTTP_REQUEST_TIMEOUT_MS = 30 * 1000;
@@ -86,10 +89,11 @@ public class NetworkCommunicator extends Service {
 		
 		if(Constants.ACTION_SEND_USER_DATA.equals(action)){
 			sendMessageToHandler(intent, SEND_USER_DATA);
-		}else if(Constants.ACTION_SEND_HEALTH_DATA.equals(action)){
-			
+		}else if(Constants.ACTION_SEND_HEALTH_DATA.equals(action)){			
 			sendMessageToHandler(intent, SEND_HEALTH_DATA);
-		}		
+		}else if(Constants.ACTION_UPDATE_USER_DATA.equals(action)){
+			sendMessageToHandler(intent, UPDATE_USER_DATA);
+		}
 		
 		return START_REDELIVER_INTENT;
 	}
@@ -113,8 +117,10 @@ public class NetworkCommunicator extends Service {
 			switch(action){
 			    case SEND_USER_DATA:
 			    {
+			    	Intent intent  = (Intent)msg.obj;
+			    	PersonModel personModel = intent.getParcelableExtra(Constants.EXTRA_USER_DATA);
 			    	try {
-						sendUserDataToServer();
+						sendUserDataToServer(personModel);	
 					} catch (AuthenticationException e) {
 						e.printStackTrace();
 					} catch (ClientProtocolException e) {						
@@ -130,16 +136,6 @@ public class NetworkCommunicator extends Service {
 			    {
 			    	Intent intent  = (Intent)msg.obj;
 			    	SensorDataModel sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
-			    	// test
-//			    	Random random = new Random();
-//			    	long timestamp = System.currentTimeMillis();
-//			    	int heat = 34 + random.nextInt(6);
-//			    	int bpm = 70 + random.nextInt(80);
-//			    	int mic = random.nextInt(10);
-//			    	int wet = random.nextInt(1);
-//			    	SensorDataModel sensorData = new SensorDataModel.Builder()
-//			    	                                 .heat(heat).bpm(bpm).mic(mic)
-//			    	                                 .wet(wet).timestamp(timestamp).build();
 			    	try {
 						sendHealthDataToServer(sensorData);
 					} catch (AuthenticationException e) {						
@@ -151,6 +147,24 @@ public class NetworkCommunicator extends Service {
 					}
 				    break;
 			    }
+			    case UPDATE_USER_DATA:
+			    {
+			    	Intent intent  = (Intent)msg.obj;
+			    	PersonModel personModel = intent.getParcelableExtra(Constants.EXTRA_USER_DATA);
+			    	try {
+			    		updateUserDataToServer(personModel);	
+					} catch (AuthenticationException e) {
+						e.printStackTrace();
+					} catch (ClientProtocolException e) {						
+						e.printStackTrace();
+					} catch (JSONException e) {						
+						e.printStackTrace();
+					} catch (IOException e) {						
+						e.printStackTrace();
+					}
+				    break;
+			    	
+			    }
 			    default :
 			        break;
 			    }
@@ -159,24 +173,18 @@ public class NetworkCommunicator extends Service {
 	}
 
 	@Override
-	public void onDestroy() {
-			
+	public void onDestroy() {			
 		super.onDestroy();
 	}
 
 
-	public void sendUserDataToServer() 
+	public void sendUserDataToServer(PersonModel personModel) 
 			throws JSONException, ClientProtocolException, IOException, AuthenticationException {
 		
 		final String uri = Constants.USER_DATA_URL;    	
         DebugUtils.Log("Syncing to: " + uri);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.accumulate("name", "±Ë¡÷«œ");
-        jsonObject.accumulate("phone", mUserNumber);
-        jsonObject.accumulate("birth", "20131101");
         
-        final String userData = jsonObject.toString();
+        final String userData = personModel.toJSONObject().toString();
         DebugUtils.Log("json data : " + userData);
         StringEntity se = new StringEntity(userData);
         
@@ -192,15 +200,43 @@ public class NetworkCommunicator extends Service {
         	DebugUtils.Log(response);        	
         }else{
         	if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-                DebugUtils.ErrorLog("Authentication exception in sending dirty contacts");
+                DebugUtils.ErrorLog("Authentication exception in sending user data");
                 throw new AuthenticationException();
             } else {
-                DebugUtils.ErrorLog("Server error in sending dirty contacts: " + resp.getStatusLine());
+                DebugUtils.ErrorLog("Server error : " + resp.getStatusLine());
                 throw new IOException();
             }        	
-        }   	
+        }  	
+	}
+	public void updateUserDataToServer(PersonModel personModel) 
+			throws JSONException, ClientProtocolException, IOException, AuthenticationException {
 		
-		
+		final String uri = Constants.USER_DATA_URL;    	
+        DebugUtils.Log("Syncing to: " + uri);
+        
+        final String userData = personModel.toJSONObject().toString();
+        DebugUtils.Log("json data : " + userData);
+        StringEntity se = new StringEntity(userData);
+        
+        // Send a sensor data to the server        
+        final HttpPut put = new HttpPut(uri);
+        put.setEntity(se);
+        put.setHeader("Accept", "application/json");
+        put.setHeader("Content-type", "application/json");
+  
+        final HttpResponse resp = getHttpClient().execute(put);
+        final String response = EntityUtils.toString(resp.getEntity());
+        if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        	DebugUtils.Log(response);        	
+        }else{
+        	if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+                DebugUtils.ErrorLog("Authentication exception in sending user data");
+                throw new AuthenticationException();
+            } else {
+                DebugUtils.ErrorLog("Server error in sending dirty : " + resp.getStatusLine());
+                throw new IOException();
+            }        	
+        }  	
 	}
 
 	public void sendHealthDataToServer(SensorDataModel sensorData) 

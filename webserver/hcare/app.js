@@ -10,6 +10,7 @@ var healthinfo = require('./routes/healthinfo');
 var charts = require('./routes/charts');
 var http = require('http');
 var path = require('path');
+var guide = require('./routes/guide');
 
 var app = express();
 
@@ -55,6 +56,9 @@ app.get('/healthinfo/:operation?', healthinfo.list);
 
 //chart home page
 app.get('/charts/:id?/:operation?', charts.list);
+
+//query guide
+app.get('/guide/:id?/:operation?', guide.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
