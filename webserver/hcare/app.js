@@ -22,7 +22,7 @@ var healthclt = db.collection('healthinfo');
 
 
 // all environments
-app.set('port', 52273);
+app.set('port', 52277);
 app.set('views', path.join(__dirname, 'views'));
 app.set('public', path.join(__dirname, 'public'));
 app.set('view engine', 'jade');
@@ -44,7 +44,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.post('/user', user.add);
 app.get('/user/:id?', user.list);
-app.put('/user/:id', user.revise);
+app.put('/user', user.revise);
 app.del('/user/:id', user.del);
 
 //add health infomation

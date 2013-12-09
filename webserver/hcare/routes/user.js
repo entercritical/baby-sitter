@@ -11,28 +11,37 @@ var healthclt = db.collection('healthinfo');
 
 //add user
 exports.add = function(request, response){
-	var name = request.param('name');
-	var phone = request.param('phone');
-	var birth = request.param('birth');
-
-	console.log('add user', name, phone, birth);
-	
+	var paramname = request.param('name');
+	var paramphone = request.param('phone');
+	var parambirth = request.param('birth');
 	var userInfo = {
-		name : name,
-		phone : phone,
-		birth : birth,
+		name : paramname,
+		phone : paramphone,
+		birth : parambirth,
 		created : new Date()
 		};
-	//TO DO : need to check aleady registed user
-	if(name && phone && birth) {
-		userclt.insert(userInfo)
-		response.writeHead(200, {"Content-Type": "application/json"});
-		response.write(JSON.stringify(userInfo));
-  		response.end();
+
+	if(paramname && paramphone && parambirth) {
+		userclt.find({phone:paramphone}).count(function(err, count){
+			if(count > 0)
+			{
+				console.log('user aleady exist match counter', count);
+  				response.send("user aleady exist!");
+			}
+			else
+			{
+				console.log('add user');
+				userclt.insert(userInfo)
+				response.writeHead(200, {"Content-Type": "application/json"});
+				response.write(JSON.stringify(userInfo));
+  				response.end();
+			}
+		});
 	}
-	else{
-  		res.send("name + phone + birth", name, phone, birth);
-	}
+	else
+	{
+  		response.send("need to add name + phone + birth");
+	};
 };
 
 //get user info
@@ -52,22 +61,39 @@ exports.list = function (request, response){
 
 //modify user info
 exports.revise = function (request, response){
-	var id = request.param('id');
 	var name = request.param('name');
-	var temp = request.param('temp');
-	var humidity = request.param('humidity');
-	var pulse = request.param('pulse');
-
-	if(name) {
-		healthclt.update(
-						{"name": name,},
-						{$push: {"temp":temp}}, 
-						{$push: {"humidity":humidity}}, 
-						{$push: {"pulse":pulse}})
+	var phone = request.param('phone');
+	var birth = request.param('birth');
+	
+	var userInfo = {
+		name : name,
+		phone : phone,
+		birth : birth,
+		created : new Date()
+		};
+	//TO DO : need to check aleady registed user
+	if(name && phone && birth) {
+		userclt.findAndModify({
+			query:{phone:phone},
+			update:{$set:{name:name, phone:phone, birth:birth}},
+			upsert: false}, function(err, doc){
+				if(doc)
+				{
+					console.log('revise user', name, phone, birth);
+					response.writeHead(200, {"Content-Type": "application/json"});
+					response.write(JSON.stringify(userInfo));
+  					response.end();
+				}
+				else
+				{
+					console.log('user dose not exist!', name, phone, birth);
+  					response.send("user dose not exist!");
+				}
+			});
 	}
-
-	console.log('modify user', id);
-	//reponse.send(id);
+	else{
+  		response.send("need to add name + phone + birth");
+	}
 };
 
 //delete user
