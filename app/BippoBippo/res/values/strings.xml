@@ -38,4 +38,9 @@
     <string name="wet">Wet</string>
     <string name="chart_period">Chart period</string>
     <string name="chart_prompt">Select period</string>
+    <string name="overview">Overview</string>
+    <string name="notice">Notice</string>
+    <string name="solution">Solution</string>
+    <string name="solution_title">You can treat your baby\'s symptoms like following</string>
+    <string name="notice_title">Please note the following information</string>
 </resources>
