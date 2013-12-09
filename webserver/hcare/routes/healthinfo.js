@@ -86,5 +86,41 @@ exports.list = function (request, response){
 		response.write(JSON.stringify(data));
   		response.end();
 		});
+	
+
+};
+
+exports.avg = function (request, response){
+	var agent = request.header('User-Agent');
+	var operation = request.param('operation');
+
+	var start = new Date();
+	start.setDate(start.getDate()-operation);
+
+	var criteria  = {created:{$gt:start}};
+	var projection = {_id:0};
+	
+	console.log('operation=[%s] date[%s]', operation, start);
+		if(operation){
+			criteria  = {created:{$gt:start}};
+			console.log('op defined\n');
+		}
+		else{
+			criteria = {};
+			console.log('op undefined\n');
+		}
+	
+	healthclt.aggregate(
+		{$match: criteria},
+		{$group: {_id: '$user_id',
+					heatavg: {$avg: '$heat'},
+					wetavg: {$avg: '$wet'},
+					bpnavg: {$avg: '$bpm'}}}, 
+		function (error, data){
+			console.log(error, data);
+			response.writeHead(200, {"Content-Type": "application/json"});
+			response.write(JSON.stringify(data));
+  			response.end();
+		});
 };
 
