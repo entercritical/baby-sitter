@@ -1,14 +1,13 @@
 package com.wednesday.bippobippo.network;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Random;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -17,18 +16,22 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.text.TextUtils;
 
 import com.wednesday.bippobippo.Constants;
 import com.wednesday.bippobippo.DebugUtils;
@@ -36,6 +39,8 @@ import com.wednesday.bippobippo.PersonModel;
 import com.wednesday.bippobippo.SensorDataModel;
 import com.wednesday.bippobippo.SensorService;
 import com.wednesday.bippobippo.Utils;
+import com.wednesday.bippobippo.BippoBippo.Person;
+import com.wednesday.bippobippo.chart.BabyChartActivity;
 
 public class NetworkCommunicator extends Service {
 	
@@ -44,24 +49,25 @@ public class NetworkCommunicator extends Service {
 	private String mUserNumber;
 	
 	public final int SEND_USER_DATA = 1;
-	public final int SEND_HEALTH_DATA = 2 ;
+	public final int SEND_HEALTH_DATA = 2;
 	public final int GET_HEALTH_DATA = 3;
-	public final int UPDATE_USER_DATA = 4;
+	public final int UPDATE_USER_DATA = 4;	
 	
     /** Timeout (in ms) we specify for each http request */
     public static final int HTTP_REQUEST_TIMEOUT_MS = 30 * 1000;
 
+    private final IBinder mBinder = new MyBinder();
+    public static HttpClient mHttpClient;
+    
 	@Override
-	public IBinder onBind(Intent arg0) {
-		
-		return null;
+	public IBinder onBind(Intent arg0) {		
+		return mBinder;
 	}
 
 	@Override
 	public void onCreate() {
 		DebugUtils.Log("NetworkCommunicator service created");		
-		mUserNumber = Utils.getInstance(getApplicationContext()).
-				getPhoneNumber();
+		mUserNumber = getUserNumber();
 		
 		// Start up the thread running the service. Note that we create a
 		// separate thread because the service normally runs in the process's
@@ -88,20 +94,21 @@ public class NetworkCommunicator extends Service {
 		DebugUtils.Log("NetworkCommunicator action : " + action);
 		
 		if(Constants.ACTION_SEND_USER_DATA.equals(action)){
-			sendMessageToHandler(intent, SEND_USER_DATA);
+			sendMessageToHandler(intent, SEND_USER_DATA, 0);
 		}else if(Constants.ACTION_SEND_HEALTH_DATA.equals(action)){			
-			sendMessageToHandler(intent, SEND_HEALTH_DATA);
+			sendMessageToHandler(intent, SEND_HEALTH_DATA, 0);
 		}else if(Constants.ACTION_UPDATE_USER_DATA.equals(action)){
-			sendMessageToHandler(intent, UPDATE_USER_DATA);
+			sendMessageToHandler(intent, UPDATE_USER_DATA, 0);
 		}
 		
 		return START_REDELIVER_INTENT;
 	}
 	
-	private void sendMessageToHandler(Intent intent, int action) {
+	private void sendMessageToHandler(Intent intent, int action, int extra) {
 		Message msg = mNetworkHandler.obtainMessage();
 		msg.obj = (Object)intent;
 		msg.arg1 = action;
+		msg.arg2 = extra;
 		mNetworkHandler.sendMessage(msg);		
 	}
 
@@ -165,6 +172,19 @@ public class NetworkCommunicator extends Service {
 				    break;
 			    	
 			    }
+			    case GET_HEALTH_DATA:{
+			    	int period = msg.arg2;
+			    	try {
+						getHealthDataFromServer(period);
+					} catch (ClientProtocolException e) {						
+						e.printStackTrace();
+					} catch (IOException e) {						
+						e.printStackTrace();
+					} catch (JSONException e) {						
+						e.printStackTrace();
+					}
+			    	break;
+			    }
 			    default :
 			        break;
 			    }
@@ -177,6 +197,35 @@ public class NetworkCommunicator extends Service {
 		super.onDestroy();
 	}
 
+
+	public void getHealthDataFromServer(int period) 
+			throws ClientProtocolException, IOException, JSONException {
+		 // Prepare a request object
+		final String uri = Constants.HEALTH_DATA_URL
+				+ "/" + Uri.encode(mUserNumber) + "/" + period + "";
+		DebugUtils.Log(" @@ Get health data uri : " + uri);
+        HttpGet httpget = new HttpGet(uri);
+        httpget.setHeader("Content-type", "application/json");
+        // Execute the request
+        HttpResponse response;
+        
+        response = getHttpClient().execute(httpget);
+        final String resp = EntityUtils.toString(response.getEntity());
+        DebugUtils.Log(" @@ Server healthdata response " + resp);
+        if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+        	final JSONArray serverData = new JSONArray(resp);
+        	for(int i=0; i< serverData.length(); i++ ){
+        		JSONObject jsonValue = serverData.getJSONObject(i);
+        		double heat = jsonValue.getDouble(Constants.HEAT);
+        		DebugUtils.Log(" Server healthdata heat : " + heat);
+        		long timeStamp = jsonValue.getLong(Constants.TIMESTAMP);
+        		DebugUtils.Log(" Server healthdata timestamp : " + timeStamp);
+        		
+        	}
+        	
+        }
+		
+	}
 
 	public void sendUserDataToServer(PersonModel personModel) 
 			throws JSONException, ClientProtocolException, IOException, AuthenticationException {
@@ -273,13 +322,44 @@ public class NetworkCommunicator extends Service {
      * Configures the httpClient to connect to the URL provided.
      */
     public static HttpClient getHttpClient() {
-        HttpClient httpClient = new DefaultHttpClient();
-        final HttpParams params = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
-        HttpConnectionParams.setSoTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
-        ConnManagerParams.setTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
-        return httpClient;
+    	if(mHttpClient == null){
+            mHttpClient = new DefaultHttpClient();
+            final HttpParams params = mHttpClient.getParams();
+            HttpConnectionParams.setConnectionTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
+            HttpConnectionParams.setSoTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
+            ConnManagerParams.setTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
+    	}
+        return mHttpClient;
     }
+
+	@Override
+	public boolean onUnbind(Intent intent) {
+		// TODO Auto-generated method stub
+		return super.onUnbind(intent);
+	}
+	
+	public class MyBinder extends Binder{
+		public NetworkCommunicator getService(){
+			return NetworkCommunicator.this;
+		}
+	}
     
+	public void getHealthData(int period){
+		sendMessageToHandler(null, GET_HEALTH_DATA, period);
+	}
+	
+	protected String getUserNumber() {
+		String number = null;
+		Cursor cursor = getContentResolver().query(Person.CONTENT_URI, new String[]{Person.PHONE_NUMBER},
+				null, null, null);
+		if(cursor !=null && cursor.moveToFirst()){
+			number = cursor.getString(0);
+			cursor.close();
+		}
+		if(TextUtils.isEmpty(number)){
+			number = Utils.getInstance(getApplicationContext()).getPhoneNumber();
+		}
+		return number;
+	}
 
 }

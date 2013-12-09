@@ -3,12 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:background="#FFFFFF">    
+    android:background="#FFFFFF">
+    
+   <LinearLayout 
+        android:id="@+id/chart_selection"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFF0">
+        <TextView
+            android:id="@+id/time_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/chart_period"/>
+        <Spinner
+            android:id="@+id/chart_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:drawSelectorOnTop="true"
+            android:prompt="@string/chart_prompt"/>            "
+    </LinearLayout>  
 
     <LinearLayout 
         android:id="@+id/chart_temprature"
         android:layout_width="fill_parent"
         android:layout_height="300dip"
+        android:layout_below="@id/chart_selection"
         android:background="#FFFFF0"      
         >        
     </LinearLayout>  
