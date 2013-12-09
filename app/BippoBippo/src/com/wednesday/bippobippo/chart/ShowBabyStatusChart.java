@@ -8,15 +8,17 @@ import org.achartengine.ChartFactory;
 import org.achartengine.chart.PointStyle;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
-import com.wednesday.bippobippo.BippoBippo;
-import com.wednesday.bippobippo.DebugUtils;
-
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.view.View;
+
+import com.wednesday.bippobippo.BippoBippo;
+import com.wednesday.bippobippo.DebugUtils;
+import com.wednesday.bippobippo.network.NetworkCommunicator;
 
 public class ShowBabyStatusChart extends AbstractChart 
 {
@@ -26,7 +28,7 @@ public class ShowBabyStatusChart extends AbstractChart
   
   private static final int HOURS = 24;
   
-  private static final int MAX_COUNT = 100;
+  private static final int MAX_COUNT = 1000;
 
   public String[] DATA_PROJECTION = new String[] {BippoBippo.SensorData.HEAT,
 		                                          BippoBippo.SensorData.TIMESTAMP};
@@ -43,7 +45,7 @@ public class ShowBabyStatusChart extends AbstractChart
   }
   public View execute(Context context) 
   {
-    String[] titles = new String[] { "Temprature" };
+    String[] titles = new String[] { "My baby's Temprature" };
     List<Date[]> dates = new ArrayList<Date[]>();
     List<double[]> values = new ArrayList<double[]>();
     
@@ -79,6 +81,9 @@ public class ShowBabyStatusChart extends AbstractChart
     }
     dates.add(dateValues); 
     values.add(heat);
+    
+    // Get Serverdata
+    Intent intent = new Intent();
 
     int[] colors = new int[] { Color.GREEN};
     PointStyle[] styles = new PointStyle[] { PointStyle.CIRCLE};
@@ -87,7 +92,7 @@ public class ShowBabyStatusChart extends AbstractChart
     setChartSettings(renderer, "Temprature", "Time", "Celcious Degrees", dates.get(0)[0].getTime(),
     		dates.get(0)[dateValues.length - 1].getTime(), 32, 43, Color.DKGRAY, Color.BLUE);
 
-    renderer.setXLabels(7);
+    renderer.setXLabels(0);
     renderer.setYLabels(10);
     renderer.setXLabelsAlign(Align.CENTER);
     renderer.setYLabelsAlign(Align.RIGHT);

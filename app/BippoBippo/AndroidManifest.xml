@@ -81,6 +81,24 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        
+        <activity android:name="com.wednesday.bippobippo.FirstAidActivity">
+            <intent-filter>
+                <action android:name="com.wednesday.bippobippo.VIEW_FEVER_DISCRIPTION"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_DIARRHEA_DISCRIPTION"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="com.wednesday.bippobippo.GeneralDescriptionActivity">
+            <intent-filter>
+                <action android:name="com.wednesday.bippobippo.VIEW_FEVER_SOLUTION"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_FEVER_NOTICE"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_DIARRHEA_SOLUTION"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_DIARRHEA_NOTICE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

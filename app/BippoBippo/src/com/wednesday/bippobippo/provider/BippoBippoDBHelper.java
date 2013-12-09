@@ -86,7 +86,7 @@ public class BippoBippoDBHelper extends SQLiteOpenHelper {
 		/////////////////////////
 		// test
 //		createDummyPersonData(db);
-//		createDummySensorData(db);
+		createDummySensorData(db);
 
 		
 		/////////////////////////
