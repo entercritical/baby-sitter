@@ -24,14 +24,20 @@ exports.add = function (request, response){
 		mic : mic,
 		created : new Date()};
 	//TO DO: need to check registerd user
-	if(id) {
-		//db.baby.insert({"name":name, "temp":[temp], "humidity":[humidity], "pulse":[pulse]})
-		healthclt.insert(healthInfo)
-		response.writeHead(200, {"Content-Type": "application/json"});
-		response.write(JSON.stringify(healthInfo));
-  		response.end();
-	}
-	console.log('add health info', id);
+	userclt.find({phone:id},{_id:0}).count( function(error, count){
+		console.log('check user', count, error);
+		if(count > 0) {
+			console.log('add health info', id);
+			healthclt.insert(healthInfo)
+			response.writeHead(200, {"Content-Type": "application/json"});
+			response.write(JSON.stringify(healthInfo));
+  			response.end();
+		}
+		else
+		{
+  			response.send("need to join user");
+		}
+	});
 };
 
 //query specific user info
@@ -75,7 +81,6 @@ exports.list = function (request, response){
 		}
 //	}	
 
-	//healthclt.find(criteria, projection, function (error, data){
 	healthclt.find(criteria, projection).sort({timestamp:1}, function (error, data){
 		response.writeHead(200, {"Content-Type": "application/json"});
 		response.write(JSON.stringify(data));
@@ -83,8 +88,3 @@ exports.list = function (request, response){
 		});
 };
 
-/*
-exports.list = function(req, res){
-  res.send("respond with a resource");
-};
-*/
