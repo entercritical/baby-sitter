@@ -53,7 +53,7 @@ app.post('/healthinfo/:id', healthinfo.add);
 //query user health infomation
 //app.get('/healthinfo/:id?/:operation?', healthinfo.list);
 app.get('/healthinfo/:operation?', healthinfo.list);
-app.get('/avg/:operation?', healthinfo.avg);
+app.get('/avg/:id/:operation?', healthinfo.avg);
 
 //chart home page
 app.get('/charts/:id?/:operation?', charts.list);

@@ -92,6 +92,7 @@ exports.list = function (request, response){
 
 exports.avg = function (request, response){
 	var agent = request.header('User-Agent');
+	var id = request.param('id');
 	var operation = request.param('operation');
 
 	var start = new Date();
@@ -115,11 +116,62 @@ exports.avg = function (request, response){
 		{$group: {_id: '$user_id',
 					heatavg: {$avg: '$heat'},
 					wetavg: {$avg: '$wet'},
-					bpnavg: {$avg: '$bpm'}}}, 
+					bpnavg: {$avg: '$bpm'},
+
+					heatmin: {$min: '$heat'},
+					wetmin: {$min: '$wet'},
+					bpnmin: {$min: '$bpm'},
+
+					heatmax: {$max: '$heat'},
+					wetmax: {$max: '$wet'},
+					bpnmax: {$max: '$bpm'}
+
+		}}, 
 		function (error, data){
-			console.log(error, data);
+			var sumheat = 0, sumwet = 0, avgheat = 0, avgwet = 0;
+			var size = data.length;
+			var statisticInfo = {
+				myAvgHeat : 0,
+				myMinHeat : 0,
+				myMaxHeat : 0,
+				avgHeat : 0,
+				minHeat : 1000,
+				maxHeat : 0
+				};
+
+			//console.log(error, data);
+			console.log("size=\n", size);
+			for(var i = 0; i < size; i++)
+			{
+				console.log("myid=", id);
+				console.log("dataid=", i, data[i]._id);
+				sumheat = sumheat + data[i].heatavg;
+				sumwet = sumwet + data[i].wetavg;
+				
+				if(data[i].heatmin < statisticInfo.minHeat)
+					statisticInfo.minHeat = data[i].heatmin;
+
+				if(data[i].heatmax > statisticInfo.maxHeat)
+					statisticInfo.maxHeat = data[i].heatmax;
+
+				if(data[i]._id === id)
+				{
+					statisticInfo.myAvgHeat = data[i].heatavg;
+					statisticInfo.myMinHeat = data[i].heatmin;
+					statisticInfo.myMaxHeat = data[i].heatmax;
+
+					console.log("my avg=", statisticInfo.myAvgHeat);
+				}
+			}
+			avgheat = sumheat / size;
+			avgwet = sumwet / size;
+	
+			statisticInfo.avgHeat = avgheat;
+			
+			console.log("avg=", avgheat, avgwet);
 			response.writeHead(200, {"Content-Type": "application/json"});
-			response.write(JSON.stringify(data));
+			response.write(JSON.stringify(statisticInfo));
+			//response.write(JSON.stringify(data));
   			response.end();
 		});
 };
