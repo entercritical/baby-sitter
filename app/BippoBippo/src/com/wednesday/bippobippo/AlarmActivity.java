@@ -32,8 +32,9 @@ public class AlarmActivity extends Activity{
 	private ContentResolverHelper mContentResolverHelper;
 	private Integer mStateIndex;
 	private String mAction;
+	private boolean mIsPaused = false;
 	
-	Animation mAnimBlink;
+	private Animation mAnimBlink;
 	
 	private static final int HEAT_INDEX = 0;
 	private static final int WET_INDEX = 1;
@@ -116,10 +117,14 @@ public class AlarmActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				//finish();
-				if (mSoundPool != null) {
-					mSoundPool.stop(mSoundSiren);
-					mSoundPool.release();
-					mSoundPool = null;
+				if (mIsPaused == false) {
+					mIsPaused = true;
+					
+					mSoundPool.pause(mSoundSiren);
+					
+					// Pause alarm
+					Intent in = new Intent(SensorService.ACTION_PAUSE_ALARM);
+					startService(in);
 				} else {
 					finish();
 				}
@@ -152,6 +157,8 @@ public class AlarmActivity extends Activity{
 	}
 	
 	private void setBabyState(Intent intent) {
+		mIsPaused = false;
+		
         mAction = intent.getAction();
         SensorDataModel sensor = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
 		
@@ -174,6 +181,8 @@ public class AlarmActivity extends Activity{
         if (SensorService.ACTION_BPM_ALARM.equals(mAction) || 
         		(SensorService.ACTION_MIC_ALARM.equals(mAction))) {
         	mFirstAidBtn.setEnabled(false);
+        } else {
+        	mFirstAidBtn.setEnabled(true);
         }
 	}
 
@@ -250,4 +259,19 @@ public class AlarmActivity extends Activity{
     		// None
     	}
     }
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		DebugUtils.Log("AlarmActivity: onNewIntent() " + intent.getAction());
+		
+		setBabyState(intent);
+		
+		if (mSoundPool != null) {
+			mSoundPool.resume(mSoundSiren);
+		}
+		
+		super.onNewIntent(intent);
+	}
+    
+    
 }

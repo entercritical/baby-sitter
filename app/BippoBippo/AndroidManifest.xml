@@ -50,6 +50,8 @@
             <intent-filter>
                 <action android:name="com.wednesday.bippobippo.ACTION_START" />
                 <action android:name="com.wednesday.bippobippo.ACTION_STOP" />
+                <action android:name="com.wednesday.bippobippo.ACTION_REFRESH_DATA" />
+                <action android:name="com.wednesday.bippobippo.ACTION_PAUSE_ALARM" />
             </intent-filter>
         </service>
         <service android:name=".network.NetworkCommunicator" >
