@@ -42,23 +42,23 @@ exports.add = function (request, response){
 
 //query specific user info
 exports.list = function (request, response){
-	var agent = request.header('User-Agent');
-//	var id = request.param('id');
+	//var agent = request.header('User-Agent');
+	var id = request.param('id');
 	var operation = request.param('operation');
 
 	var start = new Date();
 	start.setDate(start.getDate()-operation);
 
-	//var criteria  = {user_id:id, created:{$gt:start}};
-	var criteria  = {created:{$gt:start}};
+	var criteria  = {user_id:id, created:{$gt:start}};
+	//var criteria  = {created:{$gt:start}};
 	var projection = {_id:0};
 	
 
 	//console.log('id=[%s] op=[%d] operation=[%s] dats[%s]', id, operation, operation, start);
 	console.log('operation=[%s] date[%s]', operation, start);
 	console.log(request.headers);
-	console.log(agent);	
-/*
+	//console.log(agent);	
+
 	if(id){
 		if(typeof operation == "undefined"){
 			console.log('id defined, op undefined\n');
@@ -69,9 +69,11 @@ exports.list = function (request, response){
 			criteria  = {user_id:id, created:{$gt:start}};
 			console.log('id defined, op defined\n');
 		}
-	}else{
-*/
-		if(operation){
+	}
+	else
+	{
+		if(operation)
+		{
 			criteria  = {created:{$gt:start}};
 			console.log('id undefined, op defined\n');
 		}
@@ -79,15 +81,13 @@ exports.list = function (request, response){
 			criteria = {};
 			console.log('id undefined, op undefined\n');
 		}
-//	}	
+	}	
 
 	healthclt.find(criteria, projection).sort({timestamp:1}, function (error, data){
 		response.writeHead(200, {"Content-Type": "application/json"});
 		response.write(JSON.stringify(data));
   		response.end();
 		});
-	
-
 };
 
 exports.avg = function (request, response){
