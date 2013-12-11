@@ -10,14 +10,18 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -28,9 +32,10 @@ public class MainActivity extends Activity {
 	private Switch mActionBarSwitch;
 	private ProgressDialog mProgressDialog;
 	private LinearLayout mButtonsLayout;
-	
+	private ImageView mBabyStateImage;
+	private SensorDataModel mSensorData;
+	private Resources mResources;
 	//private TextView mTimeStamp;
-	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,22 @@ public class MainActivity extends Activity {
 			startActivity(intent);        	
         }
         
+        mResources = getResources();
+        
+        initViews();
+        
+        // Start Service
+        Intent intent = new Intent(getBaseContext(), SensorService.class);
+        intent.setAction(SensorService.ACTION_START);
+        startService(intent);
+
+        //NetworkService networkThread = new NetworkService(true);
+        //networkThread.start();      
+    }
+    
+    private void initViews() {
+    	mBabyStateImage = (ImageView)findViewById(R.id.babyStateImage);
+    	
         mTextView[0] = (TextView)findViewById(R.id.heatText);
         mTextView[1] = (TextView)findViewById(R.id.wetText);
         mTextView[2] = (TextView)findViewById(R.id.bpmText);
@@ -52,7 +73,7 @@ public class MainActivity extends Activity {
         
         mButtonsLayout = (LinearLayout)findViewById(R.id.buttonsLayout);
         mButtonsLayout.setVisibility(View.INVISIBLE);
-        
+                
         ActionBar actionbar = getActionBar();
 		mActionBarSwitch = new Switch(this);
 
@@ -84,13 +105,7 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-
-        
-        // Start Service
-        Intent intent = new Intent(getBaseContext(), SensorService.class);
-        intent.setAction(SensorService.ACTION_START);
-        startService(intent);
-
+		
         // Progress Popup
         mProgressDialog = ProgressDialog.show(this, getString(R.string.connecting), getString(R.string.please_wait), false, true, new OnCancelListener() {
 			
@@ -99,9 +114,6 @@ public class MainActivity extends Activity {
 				mActionBarSwitch.setChecked(false);
 			}
 		});
-
-        //NetworkService networkThread = new NetworkService(true);
-        //networkThread.start();      
     }
 
     private String getPreference() {
@@ -126,7 +138,6 @@ public class MainActivity extends Activity {
         	
             String action = intent.getAction();
             double value;
-            SensorDataModel sensorData;
             
 //            if (SensorService.ACTION_BROADCAST_UPDATE_HEAT.equals(action)) {
 //            	value = intent.getDoubleExtra(SensorService.EXTRA_DOUBLE_DATA, -1);
@@ -149,13 +160,15 @@ public class MainActivity extends Activity {
             	if (mProgressDialog != null && mProgressDialog.isShowing()) {
             		mProgressDialog.dismiss();
             	}
-            	sensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
-            	mTextView[0].setText(sensorData.getHeatString());
-            	mTextView[1].setText(sensorData.getWetString());
-            	mTextView[2].setText(String.valueOf(sensorData.getBpm()));
-            	mTextView[3].setText(sensorData.getMicString());     
+            	mSensorData = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
+            	mTextView[0].setText(mSensorData.getHeatString());
+            	mTextView[1].setText(mSensorData.getWetString());
+            	mTextView[2].setText(String.valueOf(mSensorData.getBpm()));
+            	mTextView[3].setText(mSensorData.getMicString());     
             	
             	//mTimeStamp.setText(String.valueOf(sensorData.getTimeStamp()));
+            	
+            	setBabyState();
             }
         }
     }
@@ -172,7 +185,11 @@ public class MainActivity extends Activity {
         filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_BPM);
         filter.addAction(SensorService.ACTION_BROADCAST_UPDATE_MIC);
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(mSensorDataReceiver, filter);
-         
+        
+        // for refresh sensor data
+        Intent intent = new Intent(getBaseContext(), SensorService.class);
+        intent.setAction(SensorService.ACTION_REFRESH_DATA);
+        startService(intent);
 	}
 
 	@Override
@@ -202,4 +219,26 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void setBabyState() {
+		if (mSensorData == null)
+			return;
+		
+		if (mSensorData.getHeat() > mResources.getInteger(R.integer.heat_alarm1_value)) {
+			mBabyStateImage.setImageResource(R.drawable.baby_fever_icon);
+		} else if (mSensorData.getWetString().equals(mResources.getString(R.string.wet))) {
+			mBabyStateImage.setImageResource(R.drawable.baby_peeing_icon);
+		} else if (mSensorData.getMicString().equals(mResources.getString(R.string.loud))) {
+			mBabyStateImage.setImageResource(R.drawable.baby_crying_icon);
+		} else {
+			mBabyStateImage.setImageResource(R.drawable.baby_sleeping_icon);
+		}
+			
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		mResources = null;
+	}	
 }

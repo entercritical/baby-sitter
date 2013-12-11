@@ -19,6 +19,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 import at.abraxas.amarino.Amarino;
 import at.abraxas.amarino.AmarinoIntent;
 
@@ -33,10 +34,14 @@ public class SensorService extends Service {
 	private Resources mResources;
 	private long mStartTimestamp;
 	private int mAlarmWetValue;
+	private boolean mIsAlarmPause = false;
+	private long mAlarmPauseTime;
+	private String mAlarmAction;
 
 	private static final long WET_IGNORE_TIME = 60000; // for humidity sensor, ignore 1 minute
 	private static final double WET_ALARM_CONSTANT = 0.184615385; // result by experiment
-
+	private static final long ALARM_PAUSE_TIME = 300000; // alarm pause 5 minute 
+	
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_DISCONNECTED = 2;
 	
@@ -44,6 +49,8 @@ public class SensorService extends Service {
 	public static final String DEVICE_ADDRESS_KEY = "deviceAddress";
 	public static final String ACTION_START = "com.wednesday.bippobippo.ACTION_START";
 	public static final String ACTION_STOP = "com.wednesday.bippobippo.ACTION_STOP";
+	public static final String ACTION_REFRESH_DATA = "com.wednesday.bippobippo.ACTION_REFRESH_DATA";
+	public static final String ACTION_PAUSE_ALARM = "com.wednesday.bippobippo.ACTION_PAUSE_ALARM";
 	
 	public static final String ACTION_ALARM = "com.wednesday.bippobippo.ACTION_ALARM";
 	public static final String ACTION_HEAT_ALARM = "com.wednesday.bippobippo.ACTION_HEAT_ALARM";
@@ -133,6 +140,14 @@ public class SensorService extends Service {
 				Amarino.disconnect(getBaseContext(), mDeviceAddress);
 				
 				stopSelf();
+			} else if (ACTION_REFRESH_DATA.equals(action)) {
+				DebugUtils.Log("SensorService: ACTION_REFRESH_DATA");
+				Amarino.sendDataToArduino(getBaseContext(), mDeviceAddress, FLAG_GET_CURRENT_DATA, "");
+			} else if (ACTION_PAUSE_ALARM.equals(action)) {
+				DebugUtils.Log("SensorService: ACTION_PAUSE_ALARM");
+				mAlarmPauseTime = System.currentTimeMillis();
+				mIsAlarmPause = true;
+				Toast.makeText(getBaseContext(), R.string.alarm_paused_5_minutes, Toast.LENGTH_LONG).show();;
 			}
 		}
 	}
@@ -421,6 +436,12 @@ public class SensorService extends Service {
 			DebugUtils.Log("SensorService: Set Wet base = " + baseWet + " alarm = " + mAlarmWetValue);
 		}
 		
+		// check pause
+		if (mIsAlarmPause == true 
+				&& System.currentTimeMillis() > mAlarmPauseTime + ALARM_PAUSE_TIME) { //pause after ALARM_PAUSE_TIME
+			mIsAlarmPause = false;
+		}
+		
 		if (sensorData.getHeat() > mResources.getInteger(R.integer.heat_alarm1_value)) {
 			DebugUtils.Log("SensorService: HEAT Alarm");
 			startAlarmActivity(ACTION_HEAT_ALARM, sensorData);
@@ -437,6 +458,17 @@ public class SensorService extends Service {
 	}
 	
 	private void startAlarmActivity(String action, SensorDataModel sensorData) {
+		// check pause
+		if (mIsAlarmPause == true 
+				&& System.currentTimeMillis() < mAlarmPauseTime + ALARM_PAUSE_TIME
+				&& action.equals(mAlarmAction)) {
+			DebugUtils.Log("SensorService: startAlarmActivity alarm paused");
+			return;
+		}
+		
+		mIsAlarmPause = false;
+		mAlarmAction = action;
+		
 		Intent intent = new Intent(action);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(EXTRA_SENSOR_DATA, sensorData);

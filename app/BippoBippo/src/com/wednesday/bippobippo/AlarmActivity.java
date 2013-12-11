@@ -30,8 +30,11 @@ public class AlarmActivity extends Activity{
 	private int mSoundSiren;
 	private PersonModel mPerson;
 	private ContentResolverHelper mContentResolverHelper;
+	private Integer mStateIndex;
+	private String mAction;
+	private boolean mIsPaused = false;
 	
-	Animation mAnimBlink;
+	private Animation mAnimBlink;
 	
 	private static final int HEAT_INDEX = 0;
 	private static final int WET_INDEX = 1;
@@ -114,10 +117,14 @@ public class AlarmActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				//finish();
-				if (mSoundPool != null) {
-					mSoundPool.stop(mSoundSiren);
-					mSoundPool.release();
-					mSoundPool = null;
+				if (mIsPaused == false) {
+					mIsPaused = true;
+					
+					mSoundPool.pause(mSoundSiren);
+					
+					// Pause alarm
+					Intent in = new Intent(SensorService.ACTION_PAUSE_ALARM);
+					startService(in);
 				} else {
 					finish();
 				}
@@ -128,10 +135,10 @@ public class AlarmActivity extends Activity{
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
+				launchFirstAid();
 			}
 		});
+        
         mEmergencyCallBtn = (ImageButton)findViewById(R.id.emergencyCall);
         mEmergencyCallBtn.setOnClickListener(new OnClickListener() {
 			
@@ -150,24 +157,33 @@ public class AlarmActivity extends Activity{
 	}
 	
 	private void setBabyState(Intent intent) {
-		Integer stateIndex; 
-        String action = intent.getAction();
+		mIsPaused = false;
+		
+        mAction = intent.getAction();
         SensorDataModel sensor = intent.getParcelableExtra(SensorService.EXTRA_SENSOR_DATA);
 		
-        stateIndex = mAlarmIndexMap.get(action);
-        if (stateIndex == null) {
+        mStateIndex = mAlarmIndexMap.get(mAction);
+        if (mStateIndex == null) {
         	return;
         }
         
-        mBabyStateImage.setImageResource(mImageRes[stateIndex]);
-        getActionBar().setTitle("Baby " + getResources().getString(mTitleRes[stateIndex]));
-        mTextView[stateIndex].setTextColor(0xFFFF0000);
-        mTextView[stateIndex].startAnimation(mAnimBlink);
+        mBabyStateImage.setImageResource(mImageRes[mStateIndex]);
+        getActionBar().setTitle("Baby " + getResources().getString(mTitleRes[mStateIndex]));
+        mTextView[mStateIndex].setTextColor(0xFFFF0000);
+        mTextView[mStateIndex].startAnimation(mAnimBlink);
         
         mTextView[HEAT_INDEX].setText(sensor.getHeatString());
         mTextView[WET_INDEX].setText(sensor.getWetString());
         mTextView[BPM_INDEX].setText(String.valueOf(sensor.getBpm()));
-        mTextView[MIC_INDEX].setText(sensor.getMicString());		
+        mTextView[MIC_INDEX].setText(sensor.getMicString());
+        
+        // Buttons
+        if (SensorService.ACTION_BPM_ALARM.equals(mAction) || 
+        		(SensorService.ACTION_MIC_ALARM.equals(mAction))) {
+        	mFirstAidBtn.setEnabled(false);
+        } else {
+        	mFirstAidBtn.setEnabled(true);
+        }
 	}
 
 	@Override
@@ -200,6 +216,10 @@ public class AlarmActivity extends Activity{
 			mContentResolverHelper.close();
 			mContentResolverHelper = null;
 		}
+		
+		if (mAction != null) {
+			mAction = null;
+		}
 	}
 	
 	
@@ -223,4 +243,35 @@ public class AlarmActivity extends Activity{
             }
         }
     }
+    
+    private void launchFirstAid() {
+    	Intent in;
+    	
+    	if (SensorService.ACTION_HEAT_ALARM.equals(mAction)) {
+    		in = new Intent(Constants.ACTION_VIEW_FEVER_DISCRIPTION);
+    		startActivity(in);
+    	} else if (SensorService.ACTION_WET_ALARM.equals(mAction)) {
+    		in = new Intent(Constants.ACTION_VIEW_DIARRHEA_DISCRIPTION);
+    		startActivity(in);    		
+    	} else if (SensorService.ACTION_BPM_ALARM.equals(mAction)) {
+    		// None
+    	} else if (SensorService.ACTION_MIC_ALARM.equals(mAction)) {
+    		// None
+    	}
+    }
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		DebugUtils.Log("AlarmActivity: onNewIntent() " + intent.getAction());
+		
+		setBabyState(intent);
+		
+		if (mSoundPool != null) {
+			mSoundPool.resume(mSoundSiren);
+		}
+		
+		super.onNewIntent(intent);
+	}
+    
+    
 }
