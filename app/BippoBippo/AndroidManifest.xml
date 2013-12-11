@@ -88,6 +88,7 @@
             <intent-filter>
                 <action android:name="com.wednesday.bippobippo.VIEW_FEVER_DISCRIPTION"/>
                 <action android:name="com.wednesday.bippobippo.VIEW_DIARRHEA_DISCRIPTION"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_CRYING_DISCRIPTION"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
@@ -98,6 +99,8 @@
                 <action android:name="com.wednesday.bippobippo.VIEW_FEVER_NOTICE"/>
                 <action android:name="com.wednesday.bippobippo.VIEW_DIARRHEA_SOLUTION"/>
                 <action android:name="com.wednesday.bippobippo.VIEW_DIARRHEA_NOTICE"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_CRYING_SOLUTION"/>
+                <action android:name="com.wednesday.bippobippo.VIEW_CRYING_NOTICE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

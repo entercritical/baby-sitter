@@ -15,6 +15,10 @@ public class Constants {
 	public static final String DIARRHEA_SOLUTION_URL = BASE_URL + "/guide/diarrhea/Diarrhea_Solution";
 	public static final String DIARRHEA_NOTICE_URL = BASE_URL + "/guide/diarrhea/Diarrhea_Attention";	
 	
+	public static final String CRYING_OVERVIEW_URL = BASE_URL + "/guide/crying/Crying_Outline";
+	public static final String CRYING_SOLUTION_URL = BASE_URL + "/guide/crying/Crying_Solution";
+	public static final String CRYING_NOTICE_URL = BASE_URL + "/guide/crying/Crying_Attention";
+	
 	public static final String HEAT_STATISTICS_URL = BASE_URL + "/statistics";
 	
 	// INTENT action for network service
@@ -34,6 +38,10 @@ public class Constants {
 	public static final String ACTION_VIEW_DIARRHEA_DISCRIPTION = "com.wednesday.bippobippo.VIEW_DIARRHEA_DISCRIPTION";
 	public static final String ACTION_VIEW_DIARRHEA_SOLUTION = "com.wednesday.bippobippo.VIEW_DIARRHEA_SOLUTION";
 	public static final String ACTION_VIEW_DIARRHEA_NOTICE = "com.wednesday.bippobippo.VIEW_DIARRHEA_NOTICE";
+	
+	public static final String ACTION_VIEW_CRYING_DISCRIPTION = "com.wednesday.bippobippo.VIEW_CRYING_DISCRIPTION";
+	public static final String ACTION_VIEW_CRYING_SOLUTION = "com.wednesday.bippobippo.VIEW_CRYING_SOLUTION";
+	public static final String ACTION_VIEW_CRYING_NOTICE = "com.wednesday.bippobippo.VIEW_CRYING_NOTICE";
 	
 	// JSON KEY
 	public static final String HEAT = "heat";

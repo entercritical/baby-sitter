@@ -1,6 +1,8 @@
 package com.wednesday.bippobippo;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -28,6 +30,7 @@ public class FirstAidActivity extends Activity {
 	public int mDisplayMode = 0;
 	public final int mFeverMode = 1;
 	public final int mDiarrheaMode = 2;
+	public final int mCryingMode = 3;
 	
 
 	@Override
@@ -36,13 +39,7 @@ public class FirstAidActivity extends Activity {
 		
 		Intent intent = getIntent();
 		final String action = intent.getAction();
-		if(TextUtils.isEmpty(action)){
-			finish();
-		}else if(Constants.ACTION_VIEW_FEVER_DISCRIPTION.equals(action)){
-			mDisplayMode = mFeverMode;			
-		}else if(Constants.ACTION_VIEW_DIARRHEA_DISCRIPTION.equals(action)){
-			mDisplayMode = mDiarrheaMode;
-		}
+        setDisplayMode(action);
 		
 		setContentView(R.layout.activity_firstaid);
 		
@@ -63,7 +60,12 @@ public class FirstAidActivity extends Activity {
 				    	intent.setAction(Constants.ACTION_VIEW_DIARRHEA_SOLUTION);
 				    	startActivity(intent);
 					    break;
-				    }					
+				    }
+				    case mCryingMode:{
+				    	intent.setAction(Constants.ACTION_VIEW_CRYING_SOLUTION);
+				    	startActivity(intent);
+				    	break;
+				    }
 				}				
 			}
 		});
@@ -84,13 +86,31 @@ public class FirstAidActivity extends Activity {
 			        	intent.setAction(Constants.ACTION_VIEW_DIARRHEA_NOTICE);
 			        	startActivity(intent);
 				        break;
-			        }					
+			        }
+			        case mCryingMode:{
+			        	intent.setAction(Constants.ACTION_VIEW_CRYING_NOTICE);
+			        	startActivity(intent);
+			        	break;
+			        }
 			    }				
 			}
 		});	
 		
 		// Getting a text from server according to intent action
 		getServerOverviewText();
+	}
+
+
+	private void setDisplayMode(String action) {
+		if(TextUtils.isEmpty(action)){
+			finish();
+		}else if(Constants.ACTION_VIEW_FEVER_DISCRIPTION.equals(action)){
+			mDisplayMode = mFeverMode;			
+		}else if(Constants.ACTION_VIEW_DIARRHEA_DISCRIPTION.equals(action)){
+			mDisplayMode = mDiarrheaMode;
+		}else if(Constants.ACTION_VIEW_CRYING_DISCRIPTION.equals(action)){
+			mDisplayMode = mCryingMode;
+		}		
 	}
 
 
@@ -106,7 +126,12 @@ public class FirstAidActivity extends Activity {
 			params[0] = Constants.DIARRHEA_OVERVIEW_URL;
 			new DownloadOverViewTask().execute(params);
 			break;
-		}			
+		}
+		case mCryingMode:{
+			params[0] = Constants.CRYING_OVERVIEW_URL;
+			new DownloadOverViewTask().execute(params);
+			break;
+		}
 		}
 		
 	}
@@ -153,10 +178,13 @@ public class FirstAidActivity extends Activity {
 	        
 	        response = NetworkUtils.getHttpClient().execute(httpget);;
 	        String resp = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
-	        final String retStr = resp.replace("\r\n", "\n");
-	        DebugUtils.Log(" @@ Server overview response " + retStr);            
+	        String resultStr = resp.replace("\\r\\n", System.getProperty("line.separator"))
+	        		.replace("\\n", System.getProperty("line.separator"))
+	        		.replace("\"", "");
+
+	        DebugUtils.Log(" @@ Server overview response " + resultStr);            
 	        
-	        return retStr;
+	        return resultStr;
 		}
 		
 	}

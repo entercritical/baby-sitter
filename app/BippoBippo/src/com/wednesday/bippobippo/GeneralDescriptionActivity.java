@@ -26,6 +26,8 @@ public class GeneralDescriptionActivity extends Activity {
 	public final int mFeverNoticeMode = 2;
 	public final int mDiarrheaSolutionMode = 3;
 	public final int mDiarrheaNoticeMode = 4;
+	public final int mCryingSolutionMode = 5;
+	public final int mCryingNoticeMode = 6;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,17 @@ public class GeneralDescriptionActivity extends Activity {
 		
 		Intent intent = getIntent();
 		final String action = intent.getAction();
+		setDisplayMode(action);
+
+		setContentView(R.layout.activity_general_description);
+		
+		mTitleView = (TextView)findViewById(R.id.general_description_title);
+		mDescriptionView = (TextView)findViewById(R.id.description_text);
+		
+		setTitleViewAndGetDescriptionData();
+	}
+
+	private void setDisplayMode(String action) {
 		if(TextUtils.isEmpty(action)){
 			finish();
 		}else if(Constants.ACTION_VIEW_FEVER_SOLUTION.equals(action)){
@@ -41,16 +54,14 @@ public class GeneralDescriptionActivity extends Activity {
 			mDisplayMode = mFeverNoticeMode;
 		}else if(Constants.ACTION_VIEW_DIARRHEA_SOLUTION.equals(action)){
 			mDisplayMode = mDiarrheaSolutionMode;
-		}else if(Constants.ACTION_VIEW_DIARRHEA_NOTICE.endsWith(action)){
+		}else if(Constants.ACTION_VIEW_DIARRHEA_NOTICE.equals(action)){
 			mDisplayMode = mDiarrheaNoticeMode;
-		}
+		}else if(Constants.ACTION_VIEW_CRYING_SOLUTION.equals(action)){
+			mDisplayMode = mCryingSolutionMode;
+		}else if(Constants.ACTION_VIEW_CRYING_NOTICE.equals(action)){
+			mDisplayMode = mCryingNoticeMode;
+		}		
 		
-		setContentView(R.layout.activity_general_description);
-		
-		mTitleView = (TextView)findViewById(R.id.general_description_title);
-		mDescriptionView = (TextView)findViewById(R.id.description_text);
-		
-		setTitleViewAndGetDescriptionData();
 	}
 
 	private void setTitleViewAndGetDescriptionData() {
@@ -67,14 +78,27 @@ public class GeneralDescriptionActivity extends Activity {
 			params[0] = Constants.DIARRHEA_SOLUTION_URL;
 			break;
 		}
+		case mCryingSolutionMode: {
+			title = getString(R.string.solution_title);
+			params[0] = Constants.CRYING_SOLUTION_URL;
+			break;
+		}
 		case mFeverNoticeMode: {
 			title = getString(R.string.notice_title);
 			params[0] = Constants.FEVER_NOTICE_URL;
+			break;
 		}
 		case mDiarrheaNoticeMode:{
 			title = getString(R.string.notice_title);
 			params[0] = Constants.DIARRHEA_NOTICE_URL;
+			break;
 		}
+		case mCryingNoticeMode: {
+			title = getString(R.string.notice_title);
+			params[0] = Constants.CRYING_NOTICE_URL;			
+			break;
+		}
+
 		}
 		mTitleView.setText(title);
 	    new DownloadDescriptionTask().execute(params);
@@ -115,10 +139,12 @@ public class GeneralDescriptionActivity extends Activity {
 	        
 	        response = NetworkUtils.getHttpClient().execute(httpget);;
 	        String resp = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
-	        final String retStr = resp.replace("\r\n", "\n");
-	        DebugUtils.Log(" @@ Server description response " + retStr);            
+	        String resultStr = resp.replace("\\r\\n", System.getProperty("line.separator"))
+	        		.replace("\\n", System.getProperty("line.separator"))
+	        		.replace("\"", "");
+	        DebugUtils.Log(" @@ Server description response " + resultStr);            
 	        
-	        return retStr;
+	        return resultStr;
 		}
 		
 	}
