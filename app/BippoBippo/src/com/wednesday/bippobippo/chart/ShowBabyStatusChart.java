@@ -29,6 +29,7 @@ public class ShowBabyStatusChart extends AbstractChart
   private static final int HOURS = 24;
   
   private static final int MAX_COUNT = 1000;
+  private static final int X_MAX = 60;
 
   public String[] DATA_PROJECTION = new String[] {BippoBippo.SensorData.HEAT,
 		                                          BippoBippo.SensorData.TIMESTAMP};
@@ -99,6 +100,36 @@ public class ShowBabyStatusChart extends AbstractChart
     renderer.setMarginsColor(Color.parseColor("#FFFFFF"));
 
     return ChartFactory.getTimeChartView(context, buildDateDataset(titles, dates, values), renderer, "h:mm a");    
+  }
+  
+  public View execute(Context context, double[] heatValues) 
+  {
+    String[] titles = new String[] { "My baby's Temprature" };
+    List<double[]> x = new ArrayList<double[]>();
+    List<double[]> values = new ArrayList<double[]>();
+    
+    int length = heatValues.length;
+    double[] xValues = new double[length];
+    for(int i =0; i< length ; i++){
+    	xValues[i] = i;
+    }
+    x.add(xValues); 
+    values.add(heatValues);
+
+    int[] colors = new int[] { Color.GREEN};
+    PointStyle[] styles = new PointStyle[] { PointStyle.CIRCLE};
+    XYMultipleSeriesRenderer renderer = buildRenderer(colors, styles);
+
+    setChartSettings(renderer, "Temprature", "Time", "Celcious Degrees", 0 ,
+    		X_MAX , heatValues[0]-5 , heatValues[0]+5, Color.DKGRAY, Color.BLUE);
+
+    renderer.setXLabels(0);
+    renderer.setYLabels(10);
+    renderer.setXLabelsAlign(Align.CENTER);
+    renderer.setYLabelsAlign(Align.RIGHT);
+    renderer.setMarginsColor(Color.parseColor("#FFFFFF"));
+
+    return ChartFactory.getLineChartView(context, buildDataset(titles, x, values), renderer);    
   }
 }
 

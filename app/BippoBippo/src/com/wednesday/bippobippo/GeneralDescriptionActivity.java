@@ -105,8 +105,7 @@ public class GeneralDescriptionActivity extends Activity {
 		
 		protected String downloadServerData(String descriptionUri) 
 				throws ClientProtocolException, IOException{
-
-
+			
 			DebugUtils.Log(" @@ Get description uri : " + descriptionUri);
 			
 	        HttpGet httpget = new HttpGet(descriptionUri);
@@ -115,10 +114,11 @@ public class GeneralDescriptionActivity extends Activity {
 	        HttpResponse response;
 	        
 	        response = NetworkUtils.getHttpClient().execute(httpget);;
-	        final String resp = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
-	        DebugUtils.Log(" @@ Server description response " + resp);            
+	        String resp = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
+	        final String retStr = resp.replace("\r\n", "\n");
+	        DebugUtils.Log(" @@ Server description response " + retStr);            
 	        
-	        return resp;
+	        return retStr;
 		}
 		
 	}

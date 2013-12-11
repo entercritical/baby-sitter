@@ -152,10 +152,11 @@ public class FirstAidActivity extends Activity {
 	        HttpResponse response;
 	        
 	        response = NetworkUtils.getHttpClient().execute(httpget);;
-	        final String resp = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
-	        DebugUtils.Log(" @@ Server overview response " + resp);            
+	        String resp = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
+	        final String retStr = resp.replace("\r\n", "\n");
+	        DebugUtils.Log(" @@ Server overview response " + retStr);            
 	        
-	        return resp;
+	        return retStr;
 		}
 		
 	}

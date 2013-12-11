@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
     android:background="#FFFFFF">
     
    <LinearLayout 
         android:id="@+id/chart_selection"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#FFFFF0">
+        android:background="#f5f5f5">
         <TextView
             android:id="@+id/time_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_marginLeft="15dp"
+            android:singleLine="true"
+            android:textSize="23sp"
             android:text="@string/chart_period"/>
         <Spinner
             android:id="@+id/chart_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:gravity="right"
+            android:layout_marginLeft="40dp"
             android:drawSelectorOnTop="true"
             android:prompt="@string/chart_prompt"/>            "
-    </LinearLayout>  
+    </LinearLayout>     
+
 
     <LinearLayout 
         android:id="@+id/chart_temprature"
@@ -33,7 +37,7 @@
         android:layout_below="@id/chart_selection"
         android:background="#FFFFF0"      
         >        
-    </LinearLayout>  
+    </LinearLayout>
     
     <TextView
         android:id="@+id/chartSummary"
@@ -41,48 +45,159 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/chart_temprature"
         android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
         android:drawableLeft="@drawable/thermometer"
         android:drawablePadding="5dp"
+        android:layout_centerHorizontal="true"
         android:gravity="center_vertical"
-        android:textSize="25sp"
-        android:textIsSelectable="false" 
-        android:text="@string/chart_summary"/>
-    
-    <TextView
-        android:id="@+id/highestTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/chartSummary"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
-        android:gravity="center_vertical"
-        android:textSize="20sp" 
+        android:text="@string/chart_summary"
         android:textIsSelectable="false"
-        android:text="@string/highest_temprature"/>
-    
-     <TextView
-        android:id="@+id/averageTemp"
-        android:layout_width="wrap_content"
+        android:textSize="25sp" />
+     
+     <TableLayout
+        android:id="@+id/chart_summary_table"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/highestTemp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
-        android:gravity="center_vertical"
-        android:textSize="20sp" 
-        android:textIsSelectable="false"
-        android:text="@string/average_temprature"/>
+        android:layout_below="@id/chartSummary"
+        android:orientation="vertical"
+        android:stretchColumns="*" >
 
-    <TextView
-        android:id="@+id/lowestTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/averageTemp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
-        android:gravity="center_vertical"
-        android:textSize="20sp" 
-        android:textIsSelectable="false"
-        android:text="@string/lowest_temprature"/>
-    
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+           >
+
+            <TextView
+                android:id="@+id/summaryHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/myBabySummary"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/my_baby_summary"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/OtherBabySummary"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/other_baby_summary"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/highestTemp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:gravity="center_vertical"
+                android:text="@string/highest_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/my_baby_highest"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/highest_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/other_baby_highest"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/highest_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/averageTemp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:text="@string/average_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/my_baby_average"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/average_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/other_baby_average"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/average_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/lowestTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:gravity="center_vertical"
+                android:text="@string/lowest_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/my_baby_lowest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/lowest_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/other_baby_lowest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/lowest_temprature"
+                android:textIsSelectable="false"
+                android:textSize="20sp" />
+        </TableRow>
+    </TableLayout>    
 
 </RelativeLayout>

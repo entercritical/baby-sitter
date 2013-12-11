@@ -3,16 +3,19 @@ package com.wednesday.bippobippo;
 public class Constants {
     
 	// URL information 
-	public static final String USER_DATA_URL = "http://14.49.42.181:52273/user"; 
-	public static final String HEALTH_DATA_URL = "http://14.49.42.181:52273/healthinfo";
+	public static final String BASE_URL = "http://14.49.42.181:52273";
+	public static final String USER_DATA_URL = BASE_URL+ "/user"; 
+	public static final String HEALTH_DATA_URL = BASE_URL + "/healthinfo";
 	
-	public static final String FEVER_OVERVIEW_URL = "http://14.49.42.181:52273/guide/fever/Fever_Outline";
-	public static final String FEVER_SOLUTION_URL = "http://14.49.42.181:52273/guide/fever/Fever_Solution";
-	public static final String FEVER_NOTICE_URL = "http://14.49.42.181:52273/guide/fever/Fever_Attention";
+	public static final String FEVER_OVERVIEW_URL = BASE_URL + "/guide/fever/Fever_Outline";
+	public static final String FEVER_SOLUTION_URL = BASE_URL + "/guide/fever/Fever_Solution";
+	public static final String FEVER_NOTICE_URL = BASE_URL + "/guide/fever/Fever_Attention";
 	
-	public static final String DIARRHEA_OVERVIEW_URL = "http://14.49.42.181:52273/guide/diarrhea/Diarrhea_Outline";
-	public static final String DIARRHEA_SOLUTION_URL = "http://14.49.42.181:52273/guide/diarrhea/Diarrhea_Solution";
-	public static final String DIARRHEA_NOTICE_URL = "http://14.49.42.181:52273/guide/diarrhea/Diarrhea_Attention";	
+	public static final String DIARRHEA_OVERVIEW_URL = BASE_URL + "/guide/diarrhea/Diarrhea_Outline";
+	public static final String DIARRHEA_SOLUTION_URL = BASE_URL + "/guide/diarrhea/Diarrhea_Solution";
+	public static final String DIARRHEA_NOTICE_URL = BASE_URL + "/guide/diarrhea/Diarrhea_Attention";	
+	
+	public static final String HEAT_STATISTICS_URL = BASE_URL + "/statistics";
 	
 	// INTENT action for network service
 	public static final String ACTION_SEND_USER_DATA = "com.wednesday.bippobippo.user.SEND";
@@ -53,5 +56,13 @@ public class Constants {
     /** Timeout (in ms) we specify for each http request */
     public static final int HTTP_REQUEST_TIMEOUT_MS = 30 * 1000;
     public static final int ONE_DAY = 6 * 60 * 24 ;
+    
+    // statistics json key
+    public static final String MY_AVG_HEAT = "myAvgHeat";
+    public static final String MY_MIN_HEAT = "myMinHeat";
+    public static final String MY_MAX_HEAT = "myMaxHeat";
+    public static final String AVG_HEAT = "avgHeat";
+    public static final String MIN_HEAT ="minHeat";
+    public static final String MAX_HEAT = "maxHeat";
 	
 }
