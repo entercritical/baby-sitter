@@ -5,6 +5,7 @@ import java.util.List;
 import org.achartengine.chart.PointStyle;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
@@ -65,6 +66,39 @@ public abstract class AbstractChart {
 			dataset.addSeries(series);
 		}
 		return dataset;
+	}
+
+	/**
+	 * Builds an XY multiple dataset using the provided values.
+	 * 
+	 * @param titles
+	 *            the series titles
+	 * @param xValues
+	 *            the values for the X axis
+	 * @param yValues
+	 *            the values for the Y axis
+	 * @return the XY multiple dataset
+	 */
+	protected XYMultipleSeriesDataset buildDataset(String[] titles,
+			List<double[]> xValues, List<double[]> yValues) {
+		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+		addXYSeries(dataset, titles, xValues, yValues, 0);
+		return dataset;
+	}
+
+	public void addXYSeries(XYMultipleSeriesDataset dataset, String[] titles,
+			List<double[]> xValues, List<double[]> yValues, int scale) {
+		int length = titles.length;
+		for (int i = 0; i < length; i++) {
+			XYSeries series = new XYSeries(titles[i], scale);
+			double[] xV = xValues.get(i);
+			double[] yV = yValues.get(i);
+			int seriesLength = xV.length;
+			for (int k = 0; k < seriesLength; k++) {
+				series.add(xV[k], yV[k]);
+			}
+			dataset.addSeries(series);
+		}
 	}
 
 }

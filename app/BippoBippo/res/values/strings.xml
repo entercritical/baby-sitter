@@ -36,11 +36,13 @@
     <string name="loud">Loud</string>
     <string name="dry">Dry</string>
     <string name="wet">Wet</string>
-    <string name="chart_period">Chart period</string>
+    <string name="chart_period">Select chart period</string>
     <string name="chart_prompt">Select period</string>
     <string name="overview">Overview</string>
     <string name="notice">Notice</string>
     <string name="solution">Solution</string>
     <string name="solution_title">You can treat your baby\'s symptoms like following</string>
     <string name="notice_title">Please note the following information</string>
+    <string name="my_baby_summary">My Baby</string>
+    <string name="other_baby_summary">Other Baby</string>
 </resources>
