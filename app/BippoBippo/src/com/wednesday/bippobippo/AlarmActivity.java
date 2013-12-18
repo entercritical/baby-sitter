@@ -178,8 +178,9 @@ public class AlarmActivity extends Activity{
         mTextView[MIC_INDEX].setText(sensor.getMicString());
         
         // Buttons
-        if (SensorService.ACTION_BPM_ALARM.equals(mAction) || 
-        		(SensorService.ACTION_MIC_ALARM.equals(mAction))) {
+        if (SensorService.ACTION_BPM_ALARM.equals(mAction) 
+        		//|| (SensorService.ACTION_MIC_ALARM.equals(mAction))
+        		) {
         	mFirstAidBtn.setEnabled(false);
         } else {
         	mFirstAidBtn.setEnabled(true);
@@ -256,7 +257,8 @@ public class AlarmActivity extends Activity{
     	} else if (SensorService.ACTION_BPM_ALARM.equals(mAction)) {
     		// None
     	} else if (SensorService.ACTION_MIC_ALARM.equals(mAction)) {
-    		// None
+    		in = new Intent(Constants.ACTION_VIEW_CRYING_DISCRIPTION);
+    		startActivity(in);
     	}
     }
 
