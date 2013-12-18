@@ -1,5 +1,10 @@
 package com.wednesday.bippobippo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import org.json.JSONObject;
 
 import android.os.Parcel;
@@ -57,6 +62,17 @@ public class PersonModel implements Parcelable {
 
 	public void setBirthDay(String birthDay) {
 		this.mBirthDay = birthDay;
+	}
+	
+	public Date getBirthDayDate() {
+		Date date = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(SettingsActivity.mFormat, Locale.KOREA);
+			date = sdf.parse(mBirthDay);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
 	}
 	
 	public String getDefaultTemprature() {

@@ -1,6 +1,7 @@
 package com.wednesday.bippobippo;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.wednesday.bippobippo.network.NetworkCommunicator;
 
@@ -37,6 +38,7 @@ public class SensorService extends Service {
 	private boolean mIsAlarmPause = false;
 	private long mAlarmPauseTime;
 	private String mAlarmAction;
+	private PersonModel mPerson;
 
 	private static final long WET_IGNORE_TIME = 60000; // for humidity sensor, ignore 1 minute
 	private static final double WET_ALARM_CONSTANT = 0.184615385; // result by experiment
@@ -114,6 +116,9 @@ public class SensorService extends Service {
 			if (ACTION_START.equals(action)) {
 				//Start
 				DebugUtils.Log("SensorService: ACTION_START");
+				
+				//Get Person
+				mPerson = mContentResolverHelper.getPerson();
 				
 				if (mPref != null) {
 					mDeviceAddress = mPref.getString(DEVICE_ADDRESS_KEY, null);
@@ -245,6 +250,8 @@ public class SensorService extends Service {
 		
 		mStartTimestamp = 0;
 		mAlarmWetValue = 0;
+		
+		mPerson = null;
 	}
 
 	/**
@@ -424,6 +431,32 @@ public class SensorService extends Service {
 		startService(serverIntent);
 	}
 	
+	// Check older than 6 month baby
+	// for heat alarm 
+	// less 6 month : 
+	private boolean isOlderThan6month() {
+		if (mPerson == null) {
+			return true;
+		}
+		Date d = mPerson.getBirthDayDate();
+		Date now = new Date();
+		
+		if (d == null || now == null) {
+			return true;
+		}
+		
+		int y = now.getYear() - d.getYear();
+		int m = now.getMonth() - d.getMonth();
+		
+		if (y == 0 && m <= 6) {
+			DebugUtils.Log("SensorService: Less than 6 month old");
+			return false;
+		} else {
+			DebugUtils.Log("SensorService: More than 6 month old");
+			return true;
+		}
+	}
+	
 	private void checkBabyStatus(SensorDataModel sensorData) {
 		if (sensorData == null) {
 			return;
@@ -442,7 +475,9 @@ public class SensorService extends Service {
 			mIsAlarmPause = false;
 		}
 		
-		if (sensorData.getHeat() > mResources.getInteger(R.integer.heat_alarm1_value)) {
+		if (sensorData.getHeat() > (isOlderThan6month() ?
+				mResources.getInteger(R.integer.heat_alarm2_value) :
+					mResources.getInteger(R.integer.heat_alarm1_value))) {
 			DebugUtils.Log("SensorService: HEAT Alarm");
 			startAlarmActivity(ACTION_HEAT_ALARM, sensorData);
 		} else if (mAlarmWetValue != 0 && sensorData.getWet() > mAlarmWetValue) {
