@@ -49,16 +49,22 @@ public class GeneralDescriptionActivity extends Activity {
 		if(TextUtils.isEmpty(action)){
 			finish();
 		}else if(Constants.ACTION_VIEW_FEVER_SOLUTION.equals(action)){
+			getActionBar().setTitle("Fever solution");
 			mDisplayMode = mFeverSolutionMode;			
 		}else if(Constants.ACTION_VIEW_FEVER_NOTICE.equals(action)){
+			getActionBar().setTitle("Fever notice");
 			mDisplayMode = mFeverNoticeMode;
 		}else if(Constants.ACTION_VIEW_DIARRHEA_SOLUTION.equals(action)){
+			getActionBar().setTitle("Diarrhoea solution");
 			mDisplayMode = mDiarrheaSolutionMode;
 		}else if(Constants.ACTION_VIEW_DIARRHEA_NOTICE.equals(action)){
+			getActionBar().setTitle("Diarrhoea notice");
 			mDisplayMode = mDiarrheaNoticeMode;
 		}else if(Constants.ACTION_VIEW_CRYING_SOLUTION.equals(action)){
+			getActionBar().setTitle("Crying solution");
 			mDisplayMode = mCryingSolutionMode;
 		}else if(Constants.ACTION_VIEW_CRYING_NOTICE.equals(action)){
+			getActionBar().setTitle("Crying notice");
 			mDisplayMode = mCryingNoticeMode;
 		}		
 		
@@ -108,6 +114,8 @@ public class GeneralDescriptionActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			//super.onPostExecute(result);
+			result = result + System.getProperty("line.separator") 
+					+ System.getProperty("line.separator");
 			mDescriptionView.setText(result);
 		}
 

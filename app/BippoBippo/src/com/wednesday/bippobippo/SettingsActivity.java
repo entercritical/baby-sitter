@@ -79,9 +79,11 @@ public class SettingsActivity extends Activity {
 		
 		mCalendar= Calendar.getInstance();
 		
-		if(Constants.ACTION_VIEW_SETTINGS.equals(mIntentAction)){			
+		if(Constants.ACTION_VIEW_SETTINGS.equals(mIntentAction)){
+			getActionBar().setTitle(R.string.menu_settings);
 			initSettingDisplay();			
 		}else{
+			getActionBar().setTitle(R.string.setting_title);
 			initDefaultSettingValueDisplay();			
 		}
 		

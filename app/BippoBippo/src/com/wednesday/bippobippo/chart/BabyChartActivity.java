@@ -76,6 +76,8 @@ public class BabyChartActivity extends Activity {
         
 		mUserNumber = getUserNumber();
 		
+		getActionBar().setTitle("Chart");
+		
 		mPeriodSpinner = (Spinner) findViewById(R.id.chart_spinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, 
 				R.array.period, android.R.layout.simple_spinner_item);

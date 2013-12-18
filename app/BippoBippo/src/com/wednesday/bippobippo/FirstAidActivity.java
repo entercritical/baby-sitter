@@ -46,56 +46,58 @@ public class FirstAidActivity extends Activity {
 		mOverView = (TextView)findViewById(R.id.overview_text);
 		mSolutionButton = (Button)findViewById(R.id.solution_button);
 		mSolutionButton.setOnClickListener(new OnClickListener() {
-			
+
 			Intent intent = new Intent();
+
 			@Override
 			public void onClick(View v) {
-				switch(mDisplayMode){
-				    case mFeverMode:{
-				    	intent.setAction(Constants.ACTION_VIEW_FEVER_SOLUTION);
-				    	startActivity(intent);
-					    break;
-				    }
-				    case mDiarrheaMode:{
-				    	intent.setAction(Constants.ACTION_VIEW_DIARRHEA_SOLUTION);
-				    	startActivity(intent);
-					    break;
-				    }
-				    case mCryingMode:{
-				    	intent.setAction(Constants.ACTION_VIEW_CRYING_SOLUTION);
-				    	startActivity(intent);
-				    	break;
-				    }
-				}				
+				switch (mDisplayMode) {
+				case mFeverMode: {
+					intent.setAction(Constants.ACTION_VIEW_FEVER_SOLUTION);
+					startActivity(intent);
+					break;
+				}
+				case mDiarrheaMode: {
+					intent.setAction(Constants.ACTION_VIEW_DIARRHEA_SOLUTION);
+					startActivity(intent);
+					break;
+				}
+				case mCryingMode: {
+					intent.setAction(Constants.ACTION_VIEW_CRYING_SOLUTION);
+					startActivity(intent);
+					break;
+				}
+				}
 			}
 		});
-		
-		mNoticeButton = (Button)findViewById(R.id.notice_button);
+
+		mNoticeButton = (Button) findViewById(R.id.notice_button);
 		mNoticeButton.setOnClickListener(new OnClickListener() {
-			
-			Intent intent = new Intent();			
+
+			Intent intent = new Intent();
+
 			@Override
 			public void onClick(View v) {
-				switch(mDisplayMode){
-			        case mFeverMode:{
-			        	intent.setAction(Constants.ACTION_VIEW_FEVER_NOTICE);
-			        	startActivity(intent);
-				        break;
-			        }
-			        case mDiarrheaMode:{
-			        	intent.setAction(Constants.ACTION_VIEW_DIARRHEA_NOTICE);
-			        	startActivity(intent);
-				        break;
-			        }
-			        case mCryingMode:{
-			        	intent.setAction(Constants.ACTION_VIEW_CRYING_NOTICE);
-			        	startActivity(intent);
-			        	break;
-			        }
-			    }				
+				switch (mDisplayMode) {
+				case mFeverMode: {
+					intent.setAction(Constants.ACTION_VIEW_FEVER_NOTICE);
+					startActivity(intent);
+					break;
+				}
+				case mDiarrheaMode: {
+					intent.setAction(Constants.ACTION_VIEW_DIARRHEA_NOTICE);
+					startActivity(intent);
+					break;
+				}
+				case mCryingMode: {
+					intent.setAction(Constants.ACTION_VIEW_CRYING_NOTICE);
+					startActivity(intent);
+					break;
+				}
+				}
 			}
-		});	
-		
+		});
+
 		// Getting a text from server according to intent action
 		getServerOverviewText();
 	}
@@ -105,10 +107,13 @@ public class FirstAidActivity extends Activity {
 		if(TextUtils.isEmpty(action)){
 			finish();
 		}else if(Constants.ACTION_VIEW_FEVER_DISCRIPTION.equals(action)){
+			getActionBar().setTitle("Fever");
 			mDisplayMode = mFeverMode;			
 		}else if(Constants.ACTION_VIEW_DIARRHEA_DISCRIPTION.equals(action)){
+			getActionBar().setTitle("Diarrhoea");
 			mDisplayMode = mDiarrheaMode;
 		}else if(Constants.ACTION_VIEW_CRYING_DISCRIPTION.equals(action)){
+			getActionBar().setTitle("Crying");
 			mDisplayMode = mCryingMode;
 		}		
 	}
@@ -146,6 +151,8 @@ public class FirstAidActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			//super.onPostExecute(result);
+			result = result + System.getProperty("line.separator") 
+					+ System.getProperty("line.separator");
 			mOverView.setText(result);
 		}
 
